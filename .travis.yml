@@ -1,0 +1,19 @@
+# License           : GPL3
+# Author            : Jingxin Fu <jingxinfu.tj@gmail.com>
+# Date              : 11/02/2020
+# Last Modified Date: 21/02/2020
+# Last Modified By  : Jingxin Fu <jingxinfu.tj@gmail.com>
+language: python
+os: 
+  - linux
+python:
+  - "3.5" 
+  - "3.6"      
+  - "3.7"
+  - "3.8"
+
+# command to install dependencies
+install:
+  - pip3 install .
+
+# command to run tests
