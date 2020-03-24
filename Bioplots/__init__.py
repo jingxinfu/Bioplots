@@ -6,7 +6,20 @@
 # Last Modified Date: 27/01/2020
 # Last Modified By  : Jingxin Fu <jingxinfu.tj@gmail.com>
 # -*- coding:utf-8 -*-
-__version__ = '0.0.1'
+
+import os
+import pandas as pd
+import pkg_resources
+
+__version__ = '0.1.0'
+
+DATA_DIR = pkg_resources.resource_filename('Bioplots', 'data/')
+DATASET = pd.read_csv(os.path.join(
+    DATA_DIR, 'datasets.csv')).set_index('Item')['CSV'].to_dict()
+
+from .utils import *
+from .distribution import *
+
 themes = dict(
         paper={
         "font.weight": "normal",
@@ -24,7 +37,6 @@ themes = dict(
     }
 
 )
-
 
 COLORS = [
     'black', 'gray', 'silver', 'rosybrown', 'firebrick', 'red', 'darksalmon', 'sienna', 'sandybrown', 'bisque',

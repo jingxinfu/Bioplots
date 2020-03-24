@@ -1,9 +1,16 @@
 import setuptools
-from Bioplots import __version__
+__version__ = '0.1.0'
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 NAME='Bioplots'
+try:
+    f = open("requirements.txt", "rb")
+    REQUIRES = [i.strip() for i in f.read().decode("utf-8").split("\n")]
+    f.close()
+except:
+    print("'requirements.txt' not found!")
+    REQUIRES = []
 setuptools.setup(
     name="Bioplots",
     version=__version__,
@@ -17,11 +24,11 @@ setuptools.setup(
     scripts=['bin/'+NAME],
     package_data={NAME: ["data/*"],},
     include_package_data=True,
-    install_requires=['pandas','numpy','matplotlib'],
-    python_requires='>=2.7, <4',
+    install_requires=REQUIRES,
+    python_requires='>=3, <4',
     keywords= ['Data Visualization', 'Bioinformatics','Genomics','Computational Biologist'],
     classifiers=[
-        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: Unix",
         "Operating System :: MacOS",

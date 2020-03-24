@@ -4,16 +4,23 @@
 __doc__="""
 Utils functions
 """
+from scipy import stats 
+from collections import OrderedDict
 import numpy as np
+import pandas as pd
 import matplotlib.colors as colors
 from matplotlib import markers
 from matplotlib.path import Path
-from Bioplots import THEMES
 
-def set_mpl_style(name):
-    mpl.rcParams.update(THEMS[name])
+from Bioplots import DATASET
 
-def calStats(grouped_val, groups, test='t-test', return_z_score=False, **kwargs):
+__all__= ["get_rdataset"]
+
+def get_rdataset(dataset_name):
+    df = pd.read_csv(DATASET[dataset_name], index_col=0)
+    return df
+    
+def pair_wise_compare(grouped_val, groups, test='t-test', return_z_score=False, **kwargs):
     func_map = {
         't-test': stats.ttest_ind,
         'wilcoxon': stats.wilcoxon
