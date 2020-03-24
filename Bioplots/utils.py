@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
-__doc__="""
-Utils functions
-"""
+
+import os
+import pkg_resources
+
 from scipy import stats 
 from collections import OrderedDict
 import numpy as np
@@ -11,10 +12,13 @@ import pandas as pd
 import matplotlib.colors as colors
 from matplotlib import markers
 from matplotlib.path import Path
-
 from Bioplots import DATASET
 
 __all__= ["get_rdataset"]
+
+DATA_DIR = pkg_resources.resource_filename('Bioplots', 'data/')
+DATASET = pd.read_csv(os.path.join(
+    DATA_DIR, 'datasets.csv')).set_index('Item')['CSV'].to_dict()
 
 def get_rdataset(dataset_name):
     df = pd.read_csv(DATASET[dataset_name], index_col=0)

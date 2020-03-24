@@ -88,7 +88,9 @@ html_theme_options = {
 
     'bootswatch_theme': "sandstone",
     'navbar_sidebarrel': False,
-
+    'navbar_links': [
+                     ("Github", "github"),
+                    ],
     # Choose Bootstrap version.
     # Values: "3" (default) or "2" (in quotes)
     'bootstrap_version': "3",

@@ -1,0 +1,7 @@
+Bioplots.utils module
+=====================
+
+.. automodule:: Bioplots.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

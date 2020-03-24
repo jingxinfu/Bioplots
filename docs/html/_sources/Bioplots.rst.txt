@@ -4,22 +4,10 @@ Bioplots package
 Submodules
 ----------
 
-Bioplots.distribution module
-----------------------------
+.. toctree::
 
-.. automodule:: Bioplots.distribution
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Bioplots.utils module
----------------------
-
-.. automodule:: Bioplots.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   Bioplots.distribution
+   Bioplots.utils
 
 Module contents
 ---------------
