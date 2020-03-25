@@ -699,7 +699,7 @@ _distribution_docs = dict(
 
     # Shared see also
     boxplot=dedent("""\
-    box : A box plot.\
+    box : A box plot, showing aggregate statistics of various samples in a concise matter.\
     """),
     violinplot=dedent("""\
     violin : A violin plot.\
@@ -716,7 +716,7 @@ _distribution_docs = dict(
 
 box.__doc__ = dedent("""\
     Draw a box plot to show interested feature distributions with respect to groups and subgroups.
-
+    The box plot simultaneously shows, for each sample, the median of each value, the minimum and maximum of the samples, and the interquartile range.
     Parameters
     ----------
     {input_params}

@@ -21,7 +21,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://jingxinfu.github.io/"+NAME,
     packages=setuptools.find_packages(),
-    scripts=['bin/'+NAME],
     package_data={NAME: ["data/*"],},
     include_package_data=True,
     install_requires=REQUIRES,
