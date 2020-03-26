@@ -7,7 +7,7 @@
 # Last Modified By  : Jingxin Fu <jingxinfu.tj@gmail.com>
 # -*- coding:utf-8 -*-
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 from .utils import *
 from .distribution import *
