@@ -14,3 +14,10 @@ Distribution plots
     bar
     lollipop
    
+Utility
+------------------
+
+.. autosummary::
+    :toctree: generated/
+    
+    get_rdataset

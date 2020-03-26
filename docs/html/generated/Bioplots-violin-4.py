@@ -1,2 +1,2 @@
-ax = bpt.violin(df=df,y='day', x="temp",subgroup='activ',
-             rm_empty_space=True)
+ax = bpt.violin(df=df,x='day', y="temp",subgroup='activ',
+            rm_empty_space=True)

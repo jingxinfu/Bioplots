@@ -57,6 +57,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Distribution plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#utility">Utility</a></li>
 </ul>
 </ul>
 </li>
@@ -106,25 +107,55 @@
 <h1>Bioplots.violin<a class="headerlink" href="#bioplots-violin" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="Bioplots.violin">
-<code class="sig-prename descclassname">Bioplots.</code><code class="sig-name descname">violin</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">subgroup=None</em>, <em class="sig-param">order='median'</em>, <em class="sig-param">subgroup_order='median'</em>, <em class="sig-param">rm_empty_space=False</em>, <em class="sig-param">colors='Set1'</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">fill_box=True</em>, <em class="sig-param">stat_anno=True</em>, <em class="sig-param">split_group_by_line=False</em>, <em class="sig-param">grid=False</em>, <em class="sig-param">box_kws={}</em>, <em class="sig-param">stat_kws={}</em>, <em class="sig-param">scatter_kws={}</em>, <em class="sig-param">legend_kws={'frameon': False}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.violin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Bioplots.</code><code class="sig-name descname">violin</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">subgroup=None</em>, <em class="sig-param">order='median'</em>, <em class="sig-param">subgroup_order='median'</em>, <em class="sig-param">pair=None</em>, <em class="sig-param">rm_empty_space=False</em>, <em class="sig-param">colors='Set1'</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">color_option='fill'</em>, <em class="sig-param">split_group_by_line=False</em>, <em class="sig-param">stat_anno=True</em>, <em class="sig-param">stat_test='t-test'</em>, <em class="sig-param">stat_display_cutoff=0.05</em>, <em class="sig-param">stat_anno_by_star=True</em>, <em class="sig-param">color_stat_sig=True</em>, <em class="sig-param">vilion_kws={}</em>, <em class="sig-param">scatter_kws={'zorder': 3</em>, <em class="sig-param">'s': 20}</em>, <em class="sig-param">legend_kws={'frameon': False}</em>, <em class="sig-param">pair_line_kws={}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.violin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a violin plot to show interested feature distributions with respect to groups and subgroups.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl>
-<dt><strong>x, y, subgroup</strong><span class="classifier">names of variables in <code class="docutils literal notranslate"><span class="pre">df</span></code> (subgroup is optional)</span></dt><dd><p>Inputs for plotting long-form data. See examples for interpretation.</p>
-</dd>
+<dd class="field-odd"><dl class="simple">
 <dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Dataset for plotting.</p>
 </dd>
-<dt><strong>order, subgroup_order</strong><span class="classifier">lists of strings or a string (‘median’,’name’), optional</span></dt><dd><p>Order to plot the categorical levels in.         Default: groups are ordered by its median.</p>
+<dt><strong>x, y, subgroup, pair: str</strong></dt><dd><p>names of variables in <code class="docutils literal notranslate"><span class="pre">df</span></code> (subgroup and pairt is optional)
+Oriention of plot is inferred by the dtype of <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> column in <code class="docutils literal notranslate"><span class="pre">df</span></code>. 
+If <code class="docutils literal notranslate"><span class="pre">x</span></code> column has categorical values, the plot will be vertical and vise versa. 
+<code class="docutils literal notranslate"><span class="pre">subgroup</span></code> separates variables within each individual group. 
+<code class="docutils literal notranslate"><span class="pre">pair</span></code> connects paired points by lines.</p>
 </dd>
-<dt><strong>color</strong><span class="classifier">matplotlib color, optional</span></dt><dd><p>Defualt: ‘Set1’         Color for all of the elements Or a palette name.</p>
+<dt><strong>split_group_by_line</strong><span class="classifier">boolean, optional</span></dt><dd><p>Whether added reference line to separate groups.
+False by default.</p>
 </dd>
-<dt><strong>width</strong><span class="classifier">float, optional</span></dt><dd><p>Width of a full element</p>
+<dt><strong>legend_kws: dict, optional</strong></dt><dd><p>The paramters for customizing legend display.
+<a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.legend.html#matplotlib.axes.Axes.legend" title="(in Matplotlib v3.2.1)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.legend()</span></code></a>.
+‘frameon’ is set to be False by default.</p>
+</dd>
+<dt><strong>stat_anno</strong><span class="classifier">boolean or dict, optional</span></dt><dd><p>Whether annotate statistic significance on the plot. This value can either be automatically generated during plotting 
+or customized by users (if a <cite>dict</cite> variable is passed into). 
+<code class="docutils literal notranslate"><span class="pre">e.g:{'(group_1,group_2)':p_value,...}</span></code>. 
+True by default.</p>
+</dd>
+<dt><strong>stat_test</strong><span class="classifier">str, optional</span></dt><dd><p>Options can be ‘t-test’ or ‘wilcoxon’.
+‘t-test’ by default.</p>
+</dd>
+<dt><strong>stat_anno_by_star</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether use the significant label instead of real number.
+True by default.</p>
+</dd>
+<dt><strong>stat_display_cutoff: float,optional</strong></dt><dd><p>Cutoff of visible statistic annotation.
+0.05 by default.</p>
+</dd>
+<dt><strong>color_stat_sig: bool, optional</strong></dt><dd><p>Whether color statistical text by their significance.
+True by default.</p>
+</dd>
+<dt><strong>color</strong><span class="classifier">matplotlib color, optional</span></dt><dd><p>Color for all of the elements Or a palette name.
+‘Set1’ by default.</p>
+</dd>
+<dt><strong>color_option: tuple, optional</strong></dt><dd><p>The option can be ‘edge’,’fill’, and ‘point’. ‘edge’ by default.</p>
+</dd>
+<dt><strong>pair_line_kws: dict, optional</strong></dt><dd><p>The parameters for the connected line between paired points.
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.lines()</span></code>.</p>
 </dd>
 <dt><strong>ax</strong><span class="classifier">matplotlib Axes, optional</span></dt><dd><p>Axes object to draw the plot onto, otherwise uses the current Axes.</p>
 </dd>
-<dt><strong>kwargs</strong><span class="classifier">key, value mappings</span></dt><dd><p>Other keyword arguments are passed through to
-<a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.boxplot.html#matplotlib.axes.Axes.boxplot" title="(in Matplotlib v3.2.1)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.boxplot()</span></code></a>.</p>
+<dt><strong>violin_kws</strong><span class="classifier">key, value mappings</span></dt><dd><p>Other keyword arguments are passed through to
+<a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.axes.Axes.violinplot.html#matplotlib.axes.Axes.violinplot" title="(in Matplotlib v3.2.1)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.violinplot()</span></code></a>.</p>
 </dd>
 </dl>
 </dd>
@@ -138,11 +169,11 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="Bioplots.box.html#Bioplots.box" title="Bioplots.box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">box</span></code></a></dt><dd><p>A box plot.</p>
+<dt><a class="reference internal" href="Bioplots.box.html#Bioplots.box" title="Bioplots.box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">box</span></code></a></dt><dd><p>Draw a box plot to show interested feature distributions with respect to groups and subgroups.</p>
 </dd>
-<dt><a class="reference internal" href="Bioplots.bar.html#Bioplots.bar" title="Bioplots.bar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bar</span></code></a></dt><dd><p>A bar plot.</p>
+<dt><a class="reference internal" href="Bioplots.bar.html#Bioplots.bar" title="Bioplots.bar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bar</span></code></a></dt><dd><p>Draw a bar plot to show interested feature distributions with respect to groups and subgroups.</p>
 </dd>
-<dt><a class="reference internal" href="Bioplots.lollipop.html#Bioplots.lollipop" title="Bioplots.lollipop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lollipop</span></code></a></dt><dd><p>A lollipop plot.</p>
+<dt><a class="reference internal" href="Bioplots.lollipop.html#Bioplots.lollipop" title="Bioplots.lollipop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lollipop</span></code></a></dt><dd><p>Draw a lollipop plot to show interested feature distributions with respect to groups and subgroups.</p>
 </dd>
 </dl>
 </div>
@@ -157,26 +188,47 @@
 </div>
 <div class="figure align-default">
 <img alt="../_images/Bioplots-violin-1.svg" src="../_images/Bioplots-violin-1.svg" /></div>
-<p>Draw a vertical boxplot grouped by <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">activ</span></code> variables:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">)</span>
+<p>Add paired lines</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">pair</span><span class="o">=</span><span class="s1">&#39;pair&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
 <img alt="../_images/Bioplots-violin-2.svg" src="../_images/Bioplots-violin-2.svg" /></div>
+<p>Draw a vertical violin plot grouped by <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">activ</span></code> variables:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="figure align-default">
+<img alt="../_images/Bioplots-violin-3.svg" src="../_images/Bioplots-violin-3.svg" /></div>
 <p>Remove the empty space on the frist group:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="../_images/Bioplots-violin-3.svg" src="../_images/Bioplots-violin-3.svg" /></div>
-<p>Horizontal plot</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
-<span class="gp">... </span>             <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<img alt="../_images/Bioplots-violin-4.svg" src="../_images/Bioplots-violin-4.svg" /></div>
+<p>Add dots to separate groups</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span><span class="s1">&#39;edge&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="../_images/Bioplots-violin-4.svg" src="../_images/Bioplots-violin-4.svg" /></div>
+<img alt="../_images/Bioplots-violin-5.svg" src="../_images/Bioplots-violin-5.svg" /></div>
+<p>Using box fillings to separate groups</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="figure align-default">
+<img alt="../_images/Bioplots-violin-6.svg" src="../_images/Bioplots-violin-6.svg" /></div>
+<p>Horizontal plot</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
+<span class="gp">... </span>             <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="figure align-default">
+<img alt="../_images/Bioplots-violin-7.svg" src="../_images/Bioplots-violin-7.svg" /></div>
 </dd></dl>
 
 </div>

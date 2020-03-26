@@ -20,23 +20,25 @@ from Bioplots.utils import fancy_scientific, pair_wise_compare
 __all__ = ['box', 'violin', 'bar', 'lollipop']
 
 class _Base(object):
+
     __slots__ = [
         'df','vertical',
-        'group','subgroup','value'
+        'group','subgroup','value',
         'rm_empty_space',
         'plot_props',
         'colors',
-        'order','subgroup_order',
+        'order', 'subgroup_order', 'pair',
         'gps',
     ]
 
-    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False, colors='Set1', stat_anno_median_max=False):
+    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median',pair=None,rm_empty_space=False, colors='Set1', stat_anno_median_max=False):
         self.df = df.copy()
         self.order = order # group order
         self.subgroup_order = subgroup_order # subgroup_order 
         self.rm_empty_space = rm_empty_space
         self.subgroup = subgroup # subgroup_order 
         self.colors = colors
+        self.pair = pair # Whether draw paired lines
         self._width = .7
         self._stat_anno_median_max = stat_anno_median_max
         # Establish plotting data
@@ -52,6 +54,8 @@ class _Base(object):
         vals = [x,y]
         if self.subgroup:
             vals.append(self.subgroup)
+        if self.pair:
+            vals.append(self.pair)
 
         for v in vals:
             if not isinstance(v, str):
@@ -284,24 +288,27 @@ class _Base(object):
             ax.set_xlim([min_loc, val_loc+text_step])
 
     
-    def add_scatter(self, ax, boxData, center_position, color, scatter_kws):
+    def add_scatter(self, ax, boxData, center_position, scatter_kws):
         dodge = self.width*.3
         y = boxData
         x = np.random.uniform(-dodge, dodge, size=len(y)) + center_position
+        adjust_position = x
         if not self.vertical:
             x, y = y, x
-        ax.scatter(x, y,color=color,zorder=3,**scatter_kws)
+        ax.scatter(x, y,**scatter_kws)
 
-    def add_legend(self, ax, fill_box,color_box,legend_kws):
+        return adjust_position
+
+    def add_legend(self, ax,color_option,legend_kws):
         handles = []
         for label,color in self.colors.items():
             # Box Shape
-            if fill_box:
+            if 'fill' in color_option:
                 handles.append(
                     Patch(edgecolor='k', facecolor=color,label=label)
                 )
             # Box edge color shape
-            elif color_box:
+            elif 'edge' in color_option:
                 handles.append(
                     Patch(edgecolor=color, facecolor='white', label=label)
                 )
@@ -314,21 +321,13 @@ class _Base(object):
             
         ax.legend(handles=handles, loc=(1.05, 0), **legend_kws)
 
-    def _restype(self, ax, grid):
-        ## Add grid
-        if grid == True:
-            if self.vertical:
-                ax.xaxis.grid()
-            else:
-                ax.yaxis.grid()
 
-    def plot(self, ax, fill_box=False, color_box=True,
+    def plot(self, ax, color_option,
                 stat_anno=True,
-                grid=False,
                 split_group_by_line=False,
                 box_kws={},
                 stat_kws={},
-                scatter_kws={}, legend_kws={}):
+             scatter_kws={}, legend_kws={}, pair_line_kws={}):
 
             if ax == None:
                 ax = plt.gca()
@@ -336,24 +335,32 @@ class _Base(object):
             
             for obj, v in box_kws.items():
                 self.plot_props[obj] = v
-
+                
             # Determine whether draw violin or boxplot
             tick_locations = []
             total_n = 0  # counter for number of box
+            pair_points = []  # For Paired points connection without subgroup information
 
             for i, (group_label, group_value) in enumerate(self.df.groupby(self.group)):
                 tick_loci = i
                 # There is subgroups, using nested loops to iterate subgroups
                 group_locus = OrderedDict()
+                
+
                 if self.subgroup:
                     num_subgroups = 0
                     pre_group_last_position = 0
+                    # For Paired points connection
+                    pair_points = []
+
                     for j, (subgroup_label, subgroup_value) in enumerate(group_value.groupby(self.subgroup)):
+                        
                         boxData = subgroup_value[self.value].values
                         facecolor = self.colors[subgroup_label]
-                        
+
                         if len(boxData) == 0: # ignore empty groups
                             continue
+                            
 
                         if self.rm_empty_space:
                             positions = total_n
@@ -365,9 +372,31 @@ class _Base(object):
                         if j == 0:
                             current_group_first_position = positions
 
-                        self.draw_box(
+                        adjust_position = self.draw_box(
                             ax=ax, boxData=boxData, positions=[positions], props=self.plot_props,
-                            fill_box=fill_box, color_box=color_box, facecolor=facecolor, scatter_kws=scatter_kws)
+                            color_option=color_option, facecolor=facecolor, scatter_kws=scatter_kws)
+
+                        # If connect pair points
+                        if self.pair:
+                            current_points = pd.Series({
+                                name: (adjust_position[pair_i], boxData[pair_i])
+                                for pair_i, name in enumerate(subgroup_value[self.pair])
+                                              })
+
+                            if len(pair_points) > 0:
+                                ol_names = pair_points.index.intersection(
+                                    current_points.index).tolist()
+                                # Only draw points with pairs
+                                for name in ol_names :
+                                    px,py = pair_points[name]
+                                    cx,cy = current_points[name]
+                                    x = [px,cx]
+                                    y = [py,cy]
+                                    if self.vertical:
+                                        x,y = y,x
+                                    ax.plot(x,y,**pair_line_kws)
+
+                            pair_points = current_points
 
                         # Ticks and Groups locus information
                         group_locus[(group_label, subgroup_label)] = positions
@@ -400,9 +429,31 @@ class _Base(object):
                     group_locus[group_label] = i
                     boxData = group_value[self.value].values
                     facecolor = self.colors[group_label]
-                    self.draw_box(
+                    adjust_position = self.draw_box(
                         ax=ax, boxData=boxData, positions=[positions], props=self.plot_props,
-                        fill_box=fill_box, color_box=color_box, facecolor=facecolor, scatter_kws=scatter_kws)
+                        color_option = color_option, facecolor=facecolor, scatter_kws=scatter_kws)
+
+                    # If connect pair points
+                    if self.pair:
+                            current_points = pd.Series({
+                                name: (
+                                    adjust_position[pair_i], boxData[pair_i])
+                                for pair_i, name in enumerate(group_value[self.pair])
+                            })
+                            
+                            if len(pair_points) > 0:
+                                ol_names = pair_points.index.intersection(
+                                    current_points.index).tolist()
+                                # Only draw points with pairs
+                                for name in ol_names:
+                                    px, py = pair_points[name]
+                                    cx, cy = current_points[name]
+                                    x = [px, cx]
+                                    y = [py, cy]
+                                    if not self.vertical:
+                                        x, y = y, x
+                                    ax.plot(x,y,lw=1,c='k',zorder=3) #**pair_line_kws)
+                            pair_points = current_points
 
                 tick_locations.append(tick_loci)
 
@@ -413,55 +464,47 @@ class _Base(object):
                     ax, stat_anno=stat_anno, group_locus=group_locus, **stat_kws)
 
             # Add legends
-            self.add_legend(ax, fill_box, color_box, legend_kws)
+            self.add_legend(ax, color_option, legend_kws)
             num_box = total_n if self.subgroup and self.rm_empty_space else len(self.order)
             self.annotate_axes(
                 ax=ax, tick_locations=tick_locations, num_box=num_box)
 
 
             ### Overall layout
-            # self._restype(ax=ax, grid=grid)
             plt.tight_layout()
             return ax
 
 class BoxBase(_Base):
 
-    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False,colors='Set1'):
+    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median', pair=None, rm_empty_space=False, colors='Set1'):
         ### Box Properties Part
         super().__init__(df=df,x=x, y=y, subgroup=subgroup,order=order,
-                         subgroup_order=subgroup_order, rm_empty_space=rm_empty_space,
-                         colors=colors)
+                         subgroup_order=subgroup_order, pair=pair,rm_empty_space=rm_empty_space,
+                         colors=colors, stat_anno_median_max=False
+                         )
         self.plot_props = dict(
             widths=self.width,
-            boxprops=dict(),
-            medianprops=dict(linestyle='-', linewidth=2.5),
+            boxprops=dict(facecolor='white'),
+            medianprops=dict(linestyle='-', linewidth=2.5,color='k'),
             showfliers=True,
             flierprops=dict(marker='+'),
             whiskerprops=dict(),
             capprops=dict(),
         )
 
-    def draw_box(self,ax,boxData,positions,props,fill_box,color_box,facecolor,scatter_kws):
-        # Draw violin or box plot?
-        # Fill box by groups?
-        if fill_box:
-            props['boxprops']['facecolor'] = facecolor
-            props['medianprops']['color'] = 'k'
-            scatter_color = None
+    def draw_box(self, ax, boxData, positions, props, color_option, facecolor, scatter_kws):
 
-        elif color_box:
+        # Color box fill by groups?
+        if 'fill' in color_option:
+            props['boxprops']['facecolor'] = facecolor
+
+        # Color box edge by groups?
+        if 'edge' in color_option:
             props['boxprops']['edgecolor'] = facecolor
             props['medianprops']['color'] = facecolor
-            props['boxprops']['facecolor'] = 'white'
             props['flierprops']['markeredgecolor'] = facecolor
             props['whiskerprops']['color'] = facecolor
             props['capprops']['color'] = facecolor
-            scatter_color = None
-            # Add scatter instead if do not fill box by groups
-        else:
-            props['boxprops']['facecolor'] = 'white'
-            props['medianprops']['color'] = 'k'
-            scatter_color = facecolor
 
        
         ax.boxplot(
@@ -469,62 +512,97 @@ class BoxBase(_Base):
                 positions=positions, patch_artist=True, **props
                 )
         
-        # Add scatter points for each box?
-        if scatter_color:
-            self.add_scatter(
-                ax, boxData, center_position=positions, color=scatter_color, scatter_kws=scatter_kws)
+        # Color points by groups?
+        if 'point' in color_option:
+            scatter_kws['color'] = facecolor
+            adjust_position = self.add_scatter(
+                ax, boxData, center_position=positions,scatter_kws=scatter_kws)
+        else:
+            adjust_position = positions * len(boxData)
 
-   
+        return adjust_position
+    
 class ViolinBase(_Base):
-    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False, colors='Set1'):
+    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median', pair=None, rm_empty_space=False, colors='Set1'):
+        ### Violin Properties Part
         super().__init__(df=df, x=x, y=y, subgroup=subgroup, order=order,
-                         subgroup_order=subgroup_order, rm_empty_space=rm_empty_space,
-                         colors=colors)
+                         subgroup_order=subgroup_order, pair=pair, rm_empty_space=rm_empty_space,
+                         colors=colors, stat_anno_median_max=False
+                         )
+
         self.plot_props = dict(
             widths=self.width,
             showmeans=False, showmedians=False,
             showextrema=False
         )
 
-    def draw_box(self, ax, boxData, positions, props, fill_box, color_box, facecolor, scatter_kws):
-
+    def draw_box(self, ax, boxData, positions, props, color_option, facecolor, scatter_kws):
+        
         parts = ax.violinplot(
                 boxData, vert=self.vertical,
                 positions=positions, **props
                 )
-        for pc in parts['bodies']:
-            # Fill box by groups?
-            if fill_box:
-                pc.set_facecolor(facecolor)
-                pc.set_edgecolor('k')
-            else:
-                pc.set_edgecolor(facecolor)
-            pc.set_alpha(1)
-        quartile1, medians, quartile3 = np.percentile(
-            boxData, [25, 50, 75], axis=0)
 
-       
-        if self.vertical:
-            ax.scatter(positions, medians, marker='o',
-                       color='white', s=20, zorder=3)
-            ax.vlines(positions, quartile1, quartile3,
-                    color='k', linestyle='-', lw=5)
+        quantile_line_color = 'k'
+        for pc in parts['bodies']:
+            # Initial Theme Setting
+            pc.set_edgecolor('k')
+            pc.set_facecolor('white')
+
+            # Color box edge by groups?
+            if 'edge' in color_option:
+                pc.set_edgecolor(facecolor)
+                quantile_line_color = facecolor
+
+            # Color box fill by groups?
+            if 'fill' in color_option:
+                pc.set_facecolor(facecolor)
+                quantile_line_color = 'k' # Avoid the quantile line has the same color with box filling.
+
+            pc.set_alpha(1)
+
+         # Color points by groups?
+        if 'point' in color_option:
+            scatter_kws['color'] = facecolor
+            adjust_position = self.add_scatter(
+                ax, boxData, center_position=positions,scatter_kws=scatter_kws)
+
+       # Draw the reference quantile line if not showing every points on the plot
         else:
-            ax.scatter(medians,positions, marker='o',
-                       color='white', s=20, zorder=3)
-            ax.hlines(positions, quartile1, quartile3,
-                      color='k', linestyle='-', lw=5)
-            
+            adjust_position = positions * len(boxData)
+
+            quartile1, medians, quartile3 = np.percentile(
+                boxData, [25, 50, 75], axis=0)
+
+            # Default color and marker for the median point.
+            if 'color' not in scatter_kws.keys():
+                scatter_kws['color'] = 'white' 
+            if 'marker' not in scatter_kws.keys():
+                scatter_kws['marker'] = 'o'
+
+            if self.vertical:
+                ax.scatter(positions, medians,**scatter_kws)
+                ax.vlines(positions, quartile1, quartile3,
+                        color=quantile_line_color, linestyle='-', lw=5)
+
+            else:
+                ax.scatter(medians,positions,**scatter_kws)
+                ax.hlines(positions, quartile1, quartile3,
+                        color=quantile_line_color, linestyle='-', lw=5)
+
+        return adjust_position
 
 class BarBase(_Base):
-    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False, colors='Set1'):
+    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median', pair=None, rm_empty_space=False, colors='Set1'):
+        ### Bar Properties Part
         super().__init__(df=df, x=x, y=y, subgroup=subgroup, order=order,
-                         subgroup_order=subgroup_order, rm_empty_space=rm_empty_space,
-                         colors=colors,stat_anno_median_max=True)
+                         subgroup_order=subgroup_order, pair=pair, rm_empty_space=rm_empty_space,
+                         colors=colors, stat_anno_median_max=True,
+                         )
 
         self.plot_props = dict()
 
-    def draw_box(self, ax, boxData, positions, props, fill_box, color_box, facecolor, scatter_kws):
+    def draw_box(self, ax, boxData, positions, props, color_option, facecolor, scatter_kws):
 
         if len(boxData) > 1:
             quartile1, medians, quartile3 = np.percentile(boxData, [25, 50, 75], axis=0)
@@ -535,10 +613,10 @@ class BarBase(_Base):
         edgecolor = 'white'
         errbar_color = 'k'
 
-        if color_box:
+        if color_option == 'edge':
             facecolor, edgecolor = edgecolor,facecolor
             errbar_color = edgecolor
-
+        
         if self.vertical:
             ax.bar(positions,y,self.width,color=facecolor,edgecolor=edgecolor)
             # Add error bar
@@ -553,16 +631,27 @@ class BarBase(_Base):
                 ax.hlines(positions, quartile1, quartile3,
                           color=errbar_color, linestyle='-', lw=5)
 
+         # Color points by groups?
+        if 'point' in color_option:
+            scatter_kws['color'] = facecolor
+            adjust_position = self.add_scatter(
+                ax, boxData, center_position=positions, scatter_kws=scatter_kws)
+        else:
+            adjust_position = positions * len(boxData)
+
+        return adjust_position
 
 class LollipopBase(_Base):
-    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False, colors='Set1'):
-        super().__init__(df=df, x=x, y=y, subgroup=subgroup, order=order,
-                         subgroup_order=subgroup_order, rm_empty_space=rm_empty_space,
-                         colors=colors,stat_anno_median_max=True)
 
+    def __init__(self, df, x, y, subgroup=None, order='median', subgroup_order='median',rm_empty_space=False, colors='Set1'):
+        ### Bar Properties Part
+        super().__init__(df=df, x=x, y=y, subgroup=subgroup, order=order,
+                         subgroup_order=subgroup_order, pair=None, rm_empty_space=rm_empty_space,
+                         colors=colors, stat_anno_median_max=True,
+                         )
         self.plot_props = dict()
 
-    def draw_box(self, ax, boxData, positions, props, fill_box, color_box, facecolor, scatter_kws):
+    def draw_box(self, ax, boxData, positions, props, color_option, facecolor, scatter_kws):
 
         if len(boxData) > 1:
             quartile1, quartile3 = np.percentile(boxData, [25, 75], axis=0)
@@ -573,87 +662,111 @@ class LollipopBase(_Base):
             scatter_x = positions
             scatter_y = [quartile3]
 
-        edgecolor = 'white'
-        errbar_color = 'k'
-
         if self.vertical:
             ax.vlines(positions, quartile1, quartile3,
-                        color='k', linestyle='-', lw=1)
+                        color='k', linestyle='-', lw=2)
         else:
             scatter_x, scatter_y = scatter_y, scatter_x
             ax.hlines(positions, quartile1, quartile3,
-                        color='k', linestyle='-', lw=1)
+                        color='k', linestyle='-', lw=2)
 
-        ax.scatter(scatter_x,scatter_y, color=facecolor, **scatter_kws)
+        props['color'] = facecolor
+        ax.scatter(scatter_x, scatter_y, **props)
+        
 
-def box(df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False, colors='Set1',
-            ax=None, fill_box=False, color_box=True, stat_anno=True, split_group_by_line=False,
-            grid=False,
+        return 
+
+def box(df, x, y, subgroup=None, order='median', subgroup_order='median', pair=None,rm_empty_space=False, colors='Set1',
+            ax=None, color_option=('edge'), split_group_by_line=False,
+            stat_anno=True,stat_test='t-test', stat_display_cutoff=.05, stat_anno_by_star=True, color_stat_sig=True,
             box_kws={},
-            stat_kws={},
-            scatter_kws={}, legend_kws={'frameon':False}
+            scatter_kws={'zorder': 3}, legend_kws={'frameon': False}, pair_line_kws={'lw':1, "c":'k'}
             ):
     """ Box plot"""
-    plotter = BoxBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,
+    stat_kws=dict(
+        stat_test = stat_test,
+        stat_display_cutoff = stat_display_cutoff,
+        stat_anno_by_star = stat_anno_by_star,
+        color_stat_sig = color_stat_sig,
+    )
+        
+    plotter = BoxBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,pair=pair,
                          rm_empty_space=rm_empty_space, colors=colors)
     
-    ax = plotter.plot(ax=ax,fill_box=fill_box,color_box=color_box,
-                    stat_anno=stat_anno,split_group_by_line=split_group_by_line,grid=grid,box_kws=box_kws,stat_kws=stat_kws,
-                    scatter_kws=scatter_kws, legend_kws=legend_kws)
-    plt.tight_layout()
+    ax = plotter.plot(ax=ax,color_option=color_option,
+                    stat_anno=stat_anno,split_group_by_line=split_group_by_line,box_kws=box_kws,stat_kws=stat_kws,
+                      scatter_kws=scatter_kws, legend_kws=legend_kws, pair_line_kws=pair_line_kws)
+
     return ax
 
 
-def violin(df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False, colors='Set1',
-            ax=None, fill_box=True,stat_anno=True, split_group_by_line=False,
-            grid=False,
-            box_kws={},
-            stat_kws={},
-            scatter_kws={}, legend_kws={'frameon': False}
+def violin(df, x, y, subgroup=None, order='median', subgroup_order='median', pair=None,rm_empty_space=False, colors='Set1',
+            ax=None, color_option=('fill'),split_group_by_line=False,
+            stat_anno=True, stat_test='t-test', stat_display_cutoff=.05, stat_anno_by_star=True, color_stat_sig=True,
+            vilion_kws={},
+           scatter_kws={'zorder': 3, 's': 20}, legend_kws={'frameon': False},pair_line_kws={},
             ):
     """ Violin plot"""
-    plotter = ViolinBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,
+    stat_kws = dict(
+        stat_test=stat_test,
+        stat_display_cutoff=stat_display_cutoff,
+        stat_anno_by_star=stat_anno_by_star,
+        color_stat_sig=color_stat_sig,
+    )
+    plotter = ViolinBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,pair=pair,
                          rm_empty_space=rm_empty_space, colors=colors)
 
-    ax = plotter.plot(ax=ax, fill_box=fill_box, color_box=False,
-                      stat_anno=stat_anno, split_group_by_line=split_group_by_line, grid=grid, box_kws=box_kws, stat_kws=stat_kws,
-                      scatter_kws=scatter_kws, legend_kws=legend_kws)
+    ax = plotter.plot(ax=ax,color_option=color_option,
+                      stat_anno=stat_anno, split_group_by_line=split_group_by_line,  box_kws=vilion_kws, stat_kws=stat_kws,
+                      scatter_kws=scatter_kws, legend_kws=legend_kws, pair_line_kws={})
 
     return ax
 
 
-def bar(df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False, colors='Set1',
-               ax=None, fill_box=True, stat_anno=True, split_group_by_line=False,
-               grid=False,
-               box_kws={},
-               stat_kws={},
-               scatter_kws={}, legend_kws={'frameon': False}
-               ):
+def bar(df, x, y, subgroup=None, order='median', subgroup_order='median', pair=None,rm_empty_space=False, colors='Set1',
+        ax=None,color_option=('edge'),split_group_by_line=False,
+        stat_anno=True, stat_test='t-test', stat_display_cutoff=.05, stat_anno_by_star=True, color_stat_sig=True,
+        bar_kws={},
+        scatter_kws={}, legend_kws={'frameon': False},pair_line_kws={}
+        ):
     """ Bar plot"""
-    plotter = BarBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,
+
+    stat_kws = dict(
+        stat_test=stat_test,
+        stat_display_cutoff=stat_display_cutoff,
+        stat_anno_by_star=stat_anno_by_star,
+        color_stat_sig=color_stat_sig,
+    )
+
+    plotter = BarBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order, pair=pair,
                             rm_empty_space=rm_empty_space, colors=colors)
-    color_box = not fill_box
-    ax = plotter.plot(ax=ax, fill_box=fill_box, color_box=color_box,
-                      stat_anno=stat_anno, split_group_by_line=split_group_by_line, grid=grid, box_kws=box_kws, stat_kws=stat_kws,
-                      scatter_kws=scatter_kws, legend_kws=legend_kws)
+
+    ax = plotter.plot(ax=ax, color_option=color_option,
+                      stat_anno=stat_anno, split_group_by_line=split_group_by_line,  box_kws=bar_kws, stat_kws=stat_kws,
+                      scatter_kws=scatter_kws, legend_kws=legend_kws, pair_line_kws={})
 
     return ax
 
 
 def lollipop(df, x, y, subgroup=None, order='median', subgroup_order='median', rm_empty_space=False, colors='Set1',
-             ax=None, fill_box=True, stat_anno=True, split_group_by_line=False,
-             grid=False,
-             box_kws={},
-             stat_kws={},
-             scatter_kws={'alpha':0.7,'s':100,'marker':'o','edgecolor':'k'}, legend_kws={'frameon': False}
+             ax=None,split_group_by_line=False,
+             stat_anno=True, stat_test='t-test', stat_display_cutoff=.05, stat_anno_by_star=True, color_stat_sig=True,
+             endpoints_kws={'alpha':0.7,'s':100,'marker':'o','edgecolor':'k'}, legend_kws={'frameon': False},
+             stat_kws={}
              ):
     """ lollipop plot"""
+    stat_kws = dict(
+        stat_test=stat_test,
+        stat_display_cutoff=stat_display_cutoff,
+        stat_anno_by_star=stat_anno_by_star,
+        color_stat_sig=color_stat_sig,
+    )
+
     plotter = LollipopBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,
                          rm_empty_space=rm_empty_space, colors=colors)
-    color_box = not fill_box
-    ax = plotter.plot(ax=ax, fill_box=fill_box, color_box=color_box,
-                      stat_anno=stat_anno, split_group_by_line=split_group_by_line, grid=grid, box_kws=box_kws, stat_kws=stat_kws,
-                      scatter_kws=scatter_kws, legend_kws=legend_kws)
+
+    ax = plotter.plot(ax=ax, stat_anno=stat_anno, split_group_by_line=split_group_by_line, box_kws=endpoints_kws,stat_kws=stat_kws,
+                      scatter_kws={}, legend_kws=legend_kws, color_option=())
 
     return ax
 
@@ -662,70 +775,117 @@ def lollipop(df, x, y, subgroup=None, order='median', subgroup_order='median', r
 _distribution_docs = dict(
     # Shared function parameters
     input_params=dedent("""\
-    x, y, subgroup : names of variables in ``df`` (subgroup is optional)
-        Inputs for plotting long-form data. See examples for interpretation.\
+    x, y, subgroup, pair: str
+        names of variables in ``df`` (subgroup and pairt is optional)
+        Oriention of plot is inferred by the dtype of ``x`` and ``y`` column in ``df``. 
+        If ``x`` column has categorical values, the plot will be vertical and vise versa. 
+        ``subgroup`` separates variables within each individual group. 
+        ``pair`` connects paired points by lines. \
         """),
     categorical_data=dedent("""\
     df : pandas.DataFrame
-        Dataset for plotting.\
-    """),
-
+        Dataset for plotting. \
+        """),
     order_vars=dedent("""\
     order, subgroup_order : lists of strings or a string ('median','name'), optional
-        Order to plot the categorical levels in. \
-        Default: groups are ordered by its median.  \
+        Order to plot the categorical levels in.
+        Groups are ordered by its median by default. \
+        """),
+    color=dedent("""\
+    color : matplotlib color, optional 
+        Color for all of the elements Or a palette name.
+        'Set1' by default. \
         """),
 
-    color=dedent("""\
-    color : matplotlib color, optional
-        Defualt: 'Set1' \
-        Color for all of the elements Or a palette name.\
-    """),
+    rm_empty_space = dedent("""\
+    rm_empty_space : boolean, optional 
+        If the number of subgroups is not the same among groups, there is empty space on groups with less items. 
+        Setting this parameter to True can remove the empty space.
+        False by default. \
+        """),
 
-    width=dedent("""\
-    width : float, optional
-        Width of a full element\
-    """),
+    # Shared Plot paramater
+    common_plot_paramters = dedent("""\
+    split_group_by_line : boolean, optional 
+        Whether added reference line to separate groups.
+        False by default.
+    legend_kws: dict, optional 
+        The paramters for customizing legend display.
+        :meth:`matplotlib.axes.Axes.legend`.
+        'frameon' is set to be False by default. \
+        """),
+    stat_anno_kws = dedent("""\
+    stat_anno : boolean or dict, optional 
+        Whether annotate statistic significance on the plot. This value can either be automatically generated during plotting 
+        or customized by users (if a `dict` variable is passed into). 
+        ``e.g:{'(group_1,group_2)':p_value,...}``. 
+        True by default.
+    stat_test : str, optional
+        Options can be 't-test' or 'wilcoxon'.
+        't-test' by default.
+    stat_anno_by_star : bool, optional
+        Whether use the significant label instead of real number.
+        True by default.
+    stat_display_cutoff: float,optional
+        Cutoff of visible statistic annotation.
+        0.05 by default.
+    color_stat_sig: bool, optional
+        Whether color statistical text by their significance.
+        True by default. \
+        """),
 
-    
+    partial_plot_paramters=dedent("""\
+    color_option: tuple, optional 
+        The option can be 'edge','fill', and 'point'. 'edge' by default.
+    pair_line_kws: dict, optional
+        The parameters for the connected line between paired points.
+        :meth:`matplotlib.lines`. \
+        """),
+
+    scatter_kws=dedent("""
+    scatter_kws: dict, optional 
+        The paramters for sample points on the plot.
+        :meth:`matplotlib.pyplot.scatter`. \
+        """),
+
     ax_in=dedent("""\
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.\
-    """),
+        """),
     ax_out=dedent("""\
     ax : matplotlib Axes
-        Returns the Axes object with the plot drawn onto it.\
-    """),
+        Returns the Axes object with the plot drawn onto it. \
+        """),
 
     # Shared see also
     boxplot=dedent("""\
-    box : A box plot, showing aggregate statistics of various samples in a concise matter.\
-    """),
+    box : Draw a box plot to show interested feature distributions with respect to groups and subgroups. \
+        """),
     violinplot=dedent("""\
-    violin : A violin plot.\
-    """),
+    violin : Draw a violin plot to show interested feature distributions with respect to groups and subgroups. \
+        """),
     barplot=dedent("""\
-    bar : A bar plot.\
-    """),
+    bar :  Draw a bar plot to show interested feature distributions with respect to groups and subgroups. \
+        """),
     lollipopplot=dedent("""\
-    lollipop : A lollipop plot.\
-    """),
-
+    lollipop :  Draw a lollipop plot to show interested feature distributions with respect to groups and subgroups. \
+        """),
 )
-
 
 box.__doc__ = dedent("""\
     Draw a box plot to show interested feature distributions with respect to groups and subgroups.
     The box plot simultaneously shows, for each sample, the median of each value, the minimum and maximum of the samples, and the interquartile range.
+
     Parameters
     ----------
-    {input_params}
     {categorical_data}
-    {order_vars}
+    {input_params}
+    {common_plot_paramters}
+    {stat_anno_kws}
     {color}
-    {width}
+    {partial_plot_paramters}
     {ax_in}
-    kwargs : key, value mappings
+    box_kws : key, value mappings
         Other keyword arguments are passed through to
         :meth:`matplotlib.axes.Axes.boxplot`.
 
@@ -753,6 +913,14 @@ box.__doc__ = dedent("""\
         >>> df['activ'] = df['activ'].map(str)
         >>> ax = bpt.box(df=df,x='day', y="temp")
 
+    Add paired lines:
+
+    .. plot::
+        :context: close-figs
+
+        >>> df['pair'] = list(range(50))*2
+        >>> ax = bpt.box(df=df,x='day', y="temp",pair='pair')
+
     Draw a vertical boxplot grouped by ``temp`` and ``activ`` variables:
 
     .. plot::
@@ -768,13 +936,14 @@ box.__doc__ = dedent("""\
         >>> ax = bpt.box(df=df,x='day', y="temp",subgroup='activ',
         ...             rm_empty_space=True)
 
-    Using dots to separate groups
+    Add dots to separate groups
 
     .. plot::
         :context: close-figs
 
         >>> ax = bpt.box(df=df,x='day', y="temp",subgroup='activ',
-        ...             rm_empty_space=True,fill_box=False,color_box=False)
+        ...             rm_empty_space=True,color_option=('point','edge'))
+    
     
     Using box fillings to separate groups
 
@@ -782,15 +951,15 @@ box.__doc__ = dedent("""\
         :context: close-figs
 
         >>> ax = bpt.box(df=df,x='day', y="temp",subgroup='activ',
-        ...             rm_empty_space=True,fill_box=True,color_box=False)
-
+        ...             rm_empty_space=True,color_option=('fill'))
+    
     Horizontal plot
-
+    
     .. plot::
         :context: close-figs
 
         >>> ax = bpt.box(df=df,y='day', x="temp",subgroup='activ',
-        ...              rm_empty_space=True,fill_box=True,color_box=False)
+        ...              rm_empty_space=True,color_option=('fill'))
          
     """).format(**_distribution_docs)
 
@@ -799,15 +968,16 @@ violin.__doc__ = dedent("""\
 
     Parameters
     ----------
-    {input_params}
     {categorical_data}
-    {order_vars}
+    {input_params}
+    {common_plot_paramters}
+    {stat_anno_kws}
     {color}
-    {width}
+    {partial_plot_paramters}
     {ax_in}
-    kwargs : key, value mappings
+    violin_kws : key, value mappings
         Other keyword arguments are passed through to
-        :meth:`matplotlib.axes.Axes.boxplot`.
+        :meth:`matplotlib.axes.Axes.violinplot`.
 
     Returns
     -------
@@ -833,7 +1003,15 @@ violin.__doc__ = dedent("""\
         >>> df['activ'] = df['activ'].map(str)
         >>> ax = bpt.violin(df=df,x='day', y="temp")
 
-    Draw a vertical boxplot grouped by ``temp`` and ``activ`` variables:
+    Add paired lines
+
+    .. plot::
+        :context: close-figs
+
+        >>> df['pair'] = list(range(50))*2
+        >>> ax = bpt.violin(df=df,x='day', y="temp",pair='pair')
+
+    Draw a vertical violin plot grouped by ``temp`` and ``activ`` variables:
 
     .. plot::
         :context: close-figs
@@ -848,13 +1026,29 @@ violin.__doc__ = dedent("""\
         >>> ax = bpt.violin(df=df,x='day', y="temp",subgroup='activ',
         ...             rm_empty_space=True)
 
+    Add dots to separate groups
+
+    .. plot::
+        :context: close-figs
+
+        >>> ax = bpt.violin(df=df,x='day', y="temp",subgroup='activ',
+        ...             rm_empty_space=True,color_option=('point','edge'))
+    
+    Using box fillings to separate groups
+
+    .. plot::
+        :context: close-figs
+
+        >>> ax = bpt.violin(df=df,x='day', y="temp",subgroup='activ',
+        ...             rm_empty_space=True,color_option=('fill'))
+    
     Horizontal plot
 
     .. plot::
         :context: close-figs
 
         >>> ax = bpt.violin(df=df,y='day', x="temp",subgroup='activ',
-        ...              rm_empty_space=True)
+        ...              rm_empty_space=True,color_option=('fill'))
          
     """).format(**_distribution_docs)
 
@@ -863,15 +1057,16 @@ bar.__doc__ = dedent("""\
 
     Parameters
     ----------
-    {input_params}
     {categorical_data}
-    {order_vars}
+    {input_params}
+    {common_plot_paramters}
+    {stat_anno_kws}
     {color}
-    {width}
+    {partial_plot_paramters}
     {ax_in}
-    kwargs : key, value mappings
+    bar_kws : key, value mappings
         Other keyword arguments are passed through to
-        :meth:`matplotlib.axes.Axes.boxplot`.
+        :meth:`matplotlib.axes.Axes.bar`
 
     Returns
     -------
@@ -897,6 +1092,14 @@ bar.__doc__ = dedent("""\
         >>> df['activ'] = df['activ'].map(str)
         >>> ax = bpt.bar(df=df,x='day', y="temp")
 
+    Add paired lines 
+
+    .. plot::
+        :context: close-figs
+
+        >>> df['pair'] = list(range(50))*2
+        >>> ax = bpt.bar(df=df,x='day', y="temp",pair='pair')
+
     Draw a vertical bar plot  grouped by ``temp`` and ``activ`` variables:
 
     .. plot::
@@ -904,13 +1107,13 @@ bar.__doc__ = dedent("""\
 
         >>> ax = bpt.bar(df=df,x='day', y="temp",subgroup='activ')
 
-    Remove the empty space on the frist group:
+    Add dots to separate groups
 
     .. plot::
         :context: close-figs
 
         >>> ax = bpt.bar(df=df,x='day', y="temp",subgroup='activ',
-        ...             rm_empty_space=True)
+        ...             rm_empty_space=True,color_option=('point','edge'))
     
     Using box fillings to separate groups
 
@@ -918,15 +1121,15 @@ bar.__doc__ = dedent("""\
         :context: close-figs
 
         >>> ax = bpt.bar(df=df,x='day', y="temp",subgroup='activ',
-        ...             rm_empty_space=True,fill_box=True)
-
+        ...             rm_empty_space=True,color_option=('fill'))
+    
     Horizontal plot
 
     .. plot::
         :context: close-figs
 
         >>> ax = bpt.bar(df=df,y='day', x="temp",subgroup='activ',
-        ...              rm_empty_space=True,fill_box=True)
+        ...              rm_empty_space=True,color_option=('fill'))
          
     """).format(**_distribution_docs)
 
@@ -935,15 +1138,17 @@ lollipop.__doc__ = dedent("""\
 
     Parameters
     ----------
-    {input_params}
     {categorical_data}
-    {order_vars}
+    {input_params}
+    {common_plot_paramters}
+    {stat_anno_kws}
     {color}
-    {width}
     {ax_in}
-    kwargs : key, value mappings
+    endpoints_kws: key, value mappings
+        The paramter is set for two endpoints on the lolipop.
+        Default is ``'alpha':0.7,'s':100,'marker':'o','edgecolor':'k'``
         Other keyword arguments are passed through to
-        :meth:`matplotlib.axes.Axes.boxplot`.
+        :meth:`matplotlib.axes.Axes.scatter`
 
     Returns
     -------
@@ -953,7 +1158,7 @@ lollipop.__doc__ = dedent("""\
     --------
     {violinplot}
     {barplot}
-    {lollipopplot}
+    {barplot}
 
     Examples
     --------

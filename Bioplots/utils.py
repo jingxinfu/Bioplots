@@ -12,15 +12,33 @@ import pandas as pd
 import matplotlib.colors as colors
 from matplotlib import markers
 from matplotlib.path import Path
-from Bioplots import DATASET
 
 __all__= ["get_rdataset"]
 
+# R Datasets API
 DATA_DIR = pkg_resources.resource_filename('Bioplots', 'data/')
 DATASET = pd.read_csv(os.path.join(
     DATA_DIR, 'datasets.csv')).set_index('Item')['CSV'].to_dict()
 
 def get_rdataset(dataset_name):
+    """Get R's sample datasets by name for demonstration and practice. (Internet Connection Required).
+
+    This is a collection from **Prof. Vincent Arel-Bundock**. It consist of over 1300 datasets that were originally distributed 
+    alongside the statistical software environment R and some of its add-on packages.
+    Main website: https://vincentarelbundock.github.io/Rdatasets/.
+    
+    Parameters
+    ----------
+    dataset_name : str
+        Name of R's sample datasets.
+        The list of available names is the **Item** column in http://vincentarelbundock.github.io/Rdatasets/datasets.html
+    
+    Returns
+    -------
+    pd.DataFrame
+        A R's sample dataset.
+    """  
+
     df = pd.read_csv(DATASET[dataset_name], index_col=0)
     return df
     

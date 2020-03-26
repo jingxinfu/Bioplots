@@ -1,7 +1,0 @@
-Bioplots.distribution module
-============================
-
-.. automodule:: Bioplots.distribution
-   :members:
-   :undoc-members:
-   :show-inheritance:
