@@ -11,6 +11,7 @@ from textwrap import dedent
 
 import pandas as pd
 import numpy as np
+import scipy
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 import matplotlib.pyplot as plt
@@ -602,11 +603,22 @@ class BarBase(_Base):
 
         self.plot_props = dict()
 
+    def mean_confidence_interval(self,data,confidence=0.95):
+        low, high = scipy.stats.t.interval(
+            confidence, len(data)-1,
+            loc=np.mean(data), 
+            scale=scipy.stats.sem(data)
+            )
+
+        return low,np.mean(data),high
+
     def draw_box(self, ax, boxData, positions, props, color_option, facecolor, scatter_kws):
 
         if len(boxData) > 1:
-            quartile1, medians, quartile3 = np.percentile(boxData, [25, 50, 75], axis=0)
-            y = medians
+            # quartile1, medians, quartile3 = np.percentile(boxData, [25, 50, 75], axis=0)
+            # compute the 95% confidence intervals
+            quartile1, medians, quartile3 = self.mean_confidence_interval(boxData)
+
         else:
             y = boxData
 
