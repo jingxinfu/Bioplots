@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# License           : MIT
-# Author            : Jingxin Fu <jingxinfu.tj@gmail.com>
-# Date              : 16/10/2019
-# Last Modified Date: 06/02/2020
-# Last Modified By  : Jingxin Fu <jingxinfu.tj@gmail.com>
+# -*- coding:utf-8 -*-
+################################################################################
+# Created Date : Friday February 7th 2020                                      #
+# Author: Jingxin Fu (jingxinfu.tj@gmail.com)                                  #
+# ----------                                                                   #
+# Last Modified: Friday February 7th 2020 2:38:14 pm                           #
+# Modified By: Jingxin Fu (jingxinfu.tj@gmail.com)                             #
+# ----------                                                                   #
+# Copyright (c) Jingxin Fu 2020                                                #
+################################################################################
+
 import os
 from collections import OrderedDict
 from textwrap import dedent
@@ -618,7 +623,7 @@ class BarBase(_Base):
             # quartile1, medians, quartile3 = np.percentile(boxData, [25, 50, 75], axis=0)
             # compute the 95% confidence intervals
             quartile1, medians, quartile3 = self.mean_confidence_interval(boxData)
-
+            y = medians
         else:
             y = boxData
 
@@ -1207,6 +1212,6 @@ lollipop.__doc__ = dedent("""\
         :context: close-figs
 
         >>> ax = bpt.lollipop(df=df,y='day', x="temp",subgroup='activ',
-        ...              rm_empty_space=True)
+        ...              rm_empty_space=True);
          
     """).format(**_distribution_docs)

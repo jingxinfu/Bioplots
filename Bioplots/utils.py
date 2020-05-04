@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
+################################################################################
+# Created Date : Friday February 7th 2020                                      #
+# Author: Jingxin Fu (jingxinfu.tj@gmail.com)                                  #
+# ----------                                                                   #
+# Last Modified: Friday February 7th 2020 2:38:14 pm                           #
+# Modified By: Jingxin Fu (jingxinfu.tj@gmail.com)                             #
+# ----------                                                                   #
+# Copyright (c) Jingxin Fu 2020                                                #
+################################################################################
 
 
 import os
@@ -95,17 +104,6 @@ def adjust_spines(ax, spines):
         # no xaxis ticks
         ax.xaxis.set_ticks([])
 
-class MidpointNormalize(colors.Normalize):
-    def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
-        self.midpoint = midpoint
-        colors.Normalize.__init__(self, vmin, vmax, clip)
-
-    def __call__(self, value, clip=None):
-        # I'm ignoring masked values and all kinds of edge cases to make a
-        # simple example...
-        x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
-        return np.ma.masked_array(np.interp(value, x, y))
-
 
 def align_marker(marker, halign='center', valign='middle', fillstyle='full'):
     """
@@ -159,4 +157,21 @@ def align_marker(marker, halign='center', valign='middle', fillstyle='full'):
     m_arr[:, 1] += valign / 2
 
     return Path(m_arr, bm.get_path().codes)
+
+
+class MidpointNormalize(colors.Normalize):
+    """ map continuous value to map 
+    If vmin or vmax is not given, they are initialized from the 
+    minimum and maximum value respectively of the first input processed. 
+    That is, __call__(A) calls autoscale_None(A). 
+    If clip is True and the given value falls outside the range, the returned value will be 0 or 1, 
+    whichever is closer.
+    """
+    def __init__(self,vmin=None, vmax=None,center=None, clip=False):
+        self.midpoint = center
+        colors.Normalize.__init__(self, vmin, vmax, clip)
+
+    def __call__(self, value, clip=None):
+        x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
+        return np.ma.masked_array(np.interp(value, x, y))
 

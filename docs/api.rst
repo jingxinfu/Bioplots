@@ -13,6 +13,8 @@ Distribution plots
     violin
     bar
     lollipop
+    heatmap
+    volcano
    
 Utility
 ------------------
