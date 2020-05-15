@@ -1,2 +1,2 @@
-ax = bpt.bar(df=df,x='day', y="temp",subgroup='activ',
-            rm_empty_space=True,color_option=('point','edge'))
+df['pair'] = list(range(50))*2
+ax = bpt.bar(df=df,x='day', y="temp",pair='pair')

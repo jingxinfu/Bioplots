@@ -88,13 +88,13 @@ class _BaseScatter:
         xticklabels =  sorted(self.x.unique().tolist()) 
         yticklabels =  sorted(self.y.unique().tolist()) 
         if x_order:
-            if len(set(xticklabels) & set(x_order)) == 0:
+            if set(x_order) == set(yticklabels):
                 xticklabels = x_order
             else:
                 raise ValueError('Number of elements in x_order is not equal to number of xticks')
 
         if y_order:
-            if len(set(yticklabels) & set(y_order)) == 0:
+            if set(y_order) == set(yticklabels):
                 yticklabels = y_order
             else:
                 raise ValueError('Number of elements in y_order is not equal to number of yticks')
@@ -180,7 +180,7 @@ class _BaseScatter:
             Whether larger values have larger marker size, by default True
         """
         if bin_labels:
-            self.size = pd.cut(self.size,bin_labels['bin'],bin_labels['label'])
+            self.size = pd.cut(self.size,bins=bin_labels['bin'],labels=bin_labels['label'])
         else:
             # default separate into four group
             qt = [0, .25,.75, 1.]
@@ -306,18 +306,19 @@ class _BaseScatter:
 
 scatter_doc = dict(
     # Shared function parameters
-    input_params=dedent("""\
-    df: pd.DataFrame
+    input_params=dedent("""
+    df : pd.DataFrame
         Dataset for plotting.
-    x, y: str
-        Names of variables in ``df``. \
-        """),
-    axes_order=dedent("""\
-    x_order, y_order: list
-        A list to customize axes order. \
+    x, y : str
+        Names of variables in ``df``.\
         """),
 
-    color = dedent("""\
+    axes_order=dedent("""
+    x_order,y_order : list
+        A list to customize axes order.\
+        """),
+
+    color = dedent("""
     color: str
         names of variables in ``df`` where piont color is mapped to.
     vmax : float, optional
@@ -325,14 +326,14 @@ scatter_doc = dict(
     vmin : float, optional
         min value on the continuous color range mapping, by default None
     center : float, optional
-        center value on the continuous color range mapping, by default None. \
+        center value on the continuous color range mapping, by default None.\
         """),
-    palette = dedent("""\
+    palette = dedent("""
     palette : str, list, or dict, optional 
-            Paltte to control the color mapping options. Default is 'Set1'. \
+            Paltte to control the color mapping options. Default is 'Set1'.\
         """),
 
-    size = dedent("""\
+    size = dedent("""
     size: str
         names of variables in ``df`` where piont size is mapped to.
     size_scale : int, optional
@@ -342,24 +343,24 @@ scatter_doc = dict(
         different group, by default None
         e.g bins=[0,.01,.05,1],labels=['**','*','NS']
     size_ascending : bool, optional
-        Whether larger values have larger marker size, by default True. \
+        Whether larger values have larger marker size, by default True.\
         """),
-    marker = dedent("""\
+    marker = dedent("""
     marker: str
-        names of variables in ``df`` where piont shape is mapped to. \
+        names of variables in ``df`` where piont shape is mapped to.\
         """),
 
-    ax_in=dedent("""\
+    ax_in=dedent("""
     ax : matplotlib Axes, optional
         Axes object to draw the plot onto, otherwise uses the current Axes.\
         """),
-    cbar_ax=dedent("""\
+    cbar_ax=dedent("""
     cbar_ax : matplotlib Axes, optional
-        Axes object to draw the colorbar onto, otherwise uses the same Axes as ``ax``. \
+        Axes object to draw the colorbar onto, otherwise uses the same Axes as ``ax``.\
         """),
-    ax_out=dedent("""\
+    ax_out=dedent("""
     ax : matplotlib Axes
-        Returns the Axes object with the plot drawn onto it. \
+        Returns the Axes object with the plot drawn onto it.\
         """),
 )
 
@@ -549,8 +550,26 @@ heatmap.__doc__ = heatmap.__doc__.format(**scatter_doc) + \
         >>> df = bpt.get_rdataset('lung')
         >>> df_cor = df.corr().reset_index().melt(id_vars=['index'])
         >>> df_cor['size'] = df_cor['value'].abs()
-        >>> df_cor.head()
         >>> ax = bpt.heatmap(df=df_cor,x='index',y='variable',color='value',size='size');
+
+    Customize the axes order by the averge
+
+    .. plot::
+        :context: close-figs
+
+        >>> orders = df_cor.groupby('index')['value'].mean().sort_values().index.tolist()
+        >>> ax = bpt.heatmap(df=df_cor,x='index',y='variable',color='value',size='size',
+        ...                  x_order=orders,y_order=orders);
+
+    Change the size label
+
+    .. plot::
+        :context: close-figs
+
+        >>> ax = bpt.heatmap(df=df_cor,x='index',y='variable',color='value',size='size',
+        ...                  x_order=orders,y_order=orders,
+        ...                  bin_labels=dict(bin=[0,.5,.8,1],label=['<.5','<.8','<1']));
+
         """)
 
 
