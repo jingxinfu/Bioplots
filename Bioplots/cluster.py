@@ -506,7 +506,7 @@ class Anno(_BaseScatter):
 def heatmap(df, x, y, color,size,ax=None,x_order=None,y_order=None,
             size_scale=200, bin_labels=None, size_ascending=True,
             palette='RdBu_r',vmax=None,vmin=None,center=None,marker='s',cbar_ax=None,**kws):
-    """ 
+    """It visualize relationship between ``x`` and ``y`` by a heatmap with different marker sizes.
 
     Parameters
     ----------
@@ -676,7 +676,9 @@ def scatterplot(df,x,y,color=None,marker=None,size=None,
                 size_scale=10, bin_labels=None, size_ascending=True,
                 palette='Set1', vmax=None, vmin=None, center=None, cbar_ax=None,
                 marker_values=None,
-                visible_hits=None,label=None,text_adjust=dict(arrowprops=dict(arrowstyle='->', color='k'))
+                visible_hits=None,label=None,
+                text_adjust=dict(arrowprops=dict(arrowstyle='->', color='k')),
+                scatter_kws={}
             ):
     """ It plots scatters with annotation by different color and marker shape (optional). 
 
@@ -696,6 +698,8 @@ def scatterplot(df,x,y,color=None,marker=None,size=None,
     text_adjust : dict, optional
         Annotation text property, by default dict(arrowprops=dict(arrowstyle='->', color='k'))
         Reference: https://adjusttext.readthedocs.io/en/latest/
+    scatter_kws : dict, optional
+        Scatter property.
 
     Returns
     -------
@@ -713,7 +717,7 @@ def scatterplot(df,x,y,color=None,marker=None,size=None,
     plotter = Anno(df=df, x=x, y=y, color=color,size=size,marker=marker)
     ax = plotter.plot(size_scale=size_scale, bin_labels=bin_labels, size_ascending=size_ascending,
                       palette=palette, vmax=vmax, vmin=vmin, center=center, cbar_ax=cbar_ax,
-                      marker_values=marker_values)
+                      marker_values=marker_values,**scatter_kws)
 
     ## Show customized hit from the list of input hits
     if (label is not None) and isinstance(visible_hits, list):
@@ -741,5 +745,13 @@ scatterplot.__doc__ = scatterplot.__doc__.format(**scatter_doc) + \
         >>> df = bpt.get_rdataset('lung')
         >>> bpt.scatterplot(df=df.head(20),x='wt.loss',y='age',color='inst',palette='RdBu_r',
         ...        size='time',label='status',visible_hits=[2],size_scale=400)
-       
+    
+    Change the default scatter size:
+
+    .. plot::
+        :context: close-figs
+
+        >>> bpt.scatterplot(df=df.head(20),x='wt.loss',y='age',color='inst',palette='RdBu_r',
+        ...    label='status',visible_hits=[2],scatter_kws={'s':80})
+
         """)

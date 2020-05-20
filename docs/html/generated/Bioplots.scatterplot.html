@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Bioplots.scatterplot &#8212; Bioplots 0.1.2 documentation</title>
+    <title>Bioplots.scatterplot &#8212; Bioplots 0.1.6 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -108,7 +108,7 @@
 <h1>Bioplots.scatterplot<a class="headerlink" href="#bioplots-scatterplot" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="Bioplots.scatterplot">
-<code class="sig-prename descclassname">Bioplots.</code><code class="sig-name descname">scatterplot</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">color=None</em>, <em class="sig-param">marker=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">size_scale=10</em>, <em class="sig-param">bin_labels=None</em>, <em class="sig-param">size_ascending=True</em>, <em class="sig-param">palette='Set1'</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">center=None</em>, <em class="sig-param">cbar_ax=None</em>, <em class="sig-param">marker_values=None</em>, <em class="sig-param">visible_hits=None</em>, <em class="sig-param">label=None</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.scatterplot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Bioplots.</code><code class="sig-name descname">scatterplot</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">color=None</em>, <em class="sig-param">marker=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">size_scale=10</em>, <em class="sig-param">bin_labels=None</em>, <em class="sig-param">size_ascending=True</em>, <em class="sig-param">palette='Set1'</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">center=None</em>, <em class="sig-param">cbar_ax=None</em>, <em class="sig-param">marker_values=None</em>, <em class="sig-param">visible_hits=None</em>, <em class="sig-param">label=None</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em>, <em class="sig-param">scatter_kws={}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.scatterplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>It plots scatters with annotation by different color and marker shape (optional).</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -147,6 +147,8 @@ or a list of customized label to show, by default 10</p>
 <dt>text_adjust<span class="classifier">dict, optional</span></dt><dd><p>Annotation text property, by default dict(arrowprops=dict(arrowstyle=’-&gt;’, color=’k’))
 Reference: <a class="reference external" href="https://adjusttext.readthedocs.io/en/latest/">https://adjusttext.readthedocs.io/en/latest/</a></p>
 </dd>
+<dt>scatter_kws<span class="classifier">dict, optional</span></dt><dd><p>Scatter property.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -168,6 +170,13 @@ Reference: <a class="reference external" href="https://adjusttext.readthedocs.io
 </div>
 <div class="figure align-default">
 <img alt="../_images/Bioplots-scatterplot-1.svg" src="../_images/Bioplots-scatterplot-1.svg" /></div>
+<p>Change the default scatter size:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bpt</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;wt.loss&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;inst&#39;</span><span class="p">,</span><span class="n">palette</span><span class="o">=</span><span class="s1">&#39;RdBu_r&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">label</span><span class="o">=</span><span class="s1">&#39;status&#39;</span><span class="p">,</span><span class="n">visible_hits</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">scatter_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;s&#39;</span><span class="p">:</span><span class="mi">80</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="figure align-default">
+<img alt="../_images/Bioplots-scatterplot-2.svg" src="../_images/Bioplots-scatterplot-2.svg" /></div>
 </dd></dl>
 
 </div>

@@ -1,5 +1,2 @@
-import Bioplots as bpt
-df = bpt.get_rdataset('beaver')
-df['day'] = df['day'].map(str)
-df['activ'] = df['activ'].map(str)
-ax = bpt.bar(df=df,x='day', y="temp")
+ax = bpt.violin(df=df,y='day', x="temp",subgroup='activ',
+             rm_empty_space=True,color_option=('fill'))

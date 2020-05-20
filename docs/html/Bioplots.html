@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Bioplots package &#8212; Bioplots 0.1.2 documentation</title>
+    <title>Bioplots package &#8212; Bioplots 0.1.6 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -118,7 +118,8 @@
 <dl class="function">
 <dt id="Bioplots.cluster.heatmap">
 <code class="sig-prename descclassname">Bioplots.cluster.</code><code class="sig-name descname">heatmap</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">color</em>, <em class="sig-param">size</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">x_order=None</em>, <em class="sig-param">y_order=None</em>, <em class="sig-param">size_scale=200</em>, <em class="sig-param">bin_labels=None</em>, <em class="sig-param">size_ascending=True</em>, <em class="sig-param">palette='RdBu_r'</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">center=None</em>, <em class="sig-param">marker='s'</em>, <em class="sig-param">cbar_ax=None</em>, <em class="sig-param">**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.cluster.heatmap" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list">
+<dd><p>It visualize relationship between <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> by a heatmap with different marker sizes.</p>
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
 <dt><strong>df</strong><span class="classifier">pd.DataFrame</span></dt><dd><p>Dataset for plotting.</p>
@@ -256,7 +257,7 @@ Reference: <a class="reference external" href="https://adjusttext.readthedocs.io
 
 <dl class="function">
 <dt id="Bioplots.cluster.scatterplot">
-<code class="sig-prename descclassname">Bioplots.cluster.</code><code class="sig-name descname">scatterplot</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">color=None</em>, <em class="sig-param">marker=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">size_scale=10</em>, <em class="sig-param">bin_labels=None</em>, <em class="sig-param">size_ascending=True</em>, <em class="sig-param">palette='Set1'</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">center=None</em>, <em class="sig-param">cbar_ax=None</em>, <em class="sig-param">marker_values=None</em>, <em class="sig-param">visible_hits=None</em>, <em class="sig-param">label=None</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.cluster.scatterplot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Bioplots.cluster.</code><code class="sig-name descname">scatterplot</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">color=None</em>, <em class="sig-param">marker=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">size_scale=10</em>, <em class="sig-param">bin_labels=None</em>, <em class="sig-param">size_ascending=True</em>, <em class="sig-param">palette='Set1'</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">center=None</em>, <em class="sig-param">cbar_ax=None</em>, <em class="sig-param">marker_values=None</em>, <em class="sig-param">visible_hits=None</em>, <em class="sig-param">label=None</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em>, <em class="sig-param">scatter_kws={}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.cluster.scatterplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>It plots scatters with annotation by different color and marker shape (optional).</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -295,6 +296,8 @@ or a list of customized label to show, by default 10</p>
 <dt>text_adjust<span class="classifier">dict, optional</span></dt><dd><p>Annotation text property, by default dict(arrowprops=dict(arrowstyle=’-&gt;’, color=’k’))
 Reference: <a class="reference external" href="https://adjusttext.readthedocs.io/en/latest/">https://adjusttext.readthedocs.io/en/latest/</a></p>
 </dd>
+<dt>scatter_kws<span class="classifier">dict, optional</span></dt><dd><p>Scatter property.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -316,6 +319,13 @@ Reference: <a class="reference external" href="https://adjusttext.readthedocs.io
 </div>
 <div class="figure align-default">
 <img alt="_images/Bioplots-5.svg" src="_images/Bioplots-5.svg" /></div>
+<p>Change the default scatter size:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bpt</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;wt.loss&#39;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;inst&#39;</span><span class="p">,</span><span class="n">palette</span><span class="o">=</span><span class="s1">&#39;RdBu_r&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">label</span><span class="o">=</span><span class="s1">&#39;status&#39;</span><span class="p">,</span><span class="n">visible_hits</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">scatter_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;s&#39;</span><span class="p">:</span><span class="mi">80</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="figure align-default">
+<img alt="_images/Bioplots-6.svg" src="_images/Bioplots-6.svg" /></div>
 </dd></dl>
 
 </div>
@@ -404,48 +414,48 @@ True by default.</p>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-6.svg" src="_images/Bioplots-6.svg" /></div>
+<img alt="_images/Bioplots-7.svg" src="_images/Bioplots-7.svg" /></div>
 <p>Add paired lines:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">pair</span><span class="o">=</span><span class="s1">&#39;pair&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-7.svg" src="_images/Bioplots-7.svg" /></div>
+<img alt="_images/Bioplots-8.svg" src="_images/Bioplots-8.svg" /></div>
 <p>Draw a vertical boxplot grouped by <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">activ</span></code> variables:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-8.svg" src="_images/Bioplots-8.svg" /></div>
+<img alt="_images/Bioplots-9.svg" src="_images/Bioplots-9.svg" /></div>
 <p>Remove the empty space on the frist group:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-9.svg" src="_images/Bioplots-9.svg" /></div>
+<img alt="_images/Bioplots-10.svg" src="_images/Bioplots-10.svg" /></div>
 <p>Add dots to separate groups</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span><span class="s1">&#39;edge&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-10.svg" src="_images/Bioplots-10.svg" /></div>
+<img alt="_images/Bioplots-11.svg" src="_images/Bioplots-11.svg" /></div>
 <p>Using box fillings to separate groups</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-11.svg" src="_images/Bioplots-11.svg" /></div>
+<img alt="_images/Bioplots-12.svg" src="_images/Bioplots-12.svg" /></div>
 <p>Horizontal plot</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>             <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-12.svg" src="_images/Bioplots-12.svg" /></div>
+<img alt="_images/Bioplots-13.svg" src="_images/Bioplots-13.svg" /></div>
 </dd></dl>
 
 <dl class="function">
@@ -530,48 +540,48 @@ True by default.</p>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-13.svg" src="_images/Bioplots-13.svg" /></div>
+<img alt="_images/Bioplots-14.svg" src="_images/Bioplots-14.svg" /></div>
 <p>Add paired lines</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">pair</span><span class="o">=</span><span class="s1">&#39;pair&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-14.svg" src="_images/Bioplots-14.svg" /></div>
+<img alt="_images/Bioplots-15.svg" src="_images/Bioplots-15.svg" /></div>
 <p>Draw a vertical violin plot grouped by <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">activ</span></code> variables:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-15.svg" src="_images/Bioplots-15.svg" /></div>
+<img alt="_images/Bioplots-16.svg" src="_images/Bioplots-16.svg" /></div>
 <p>Remove the empty space on the frist group:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-16.svg" src="_images/Bioplots-16.svg" /></div>
+<img alt="_images/Bioplots-17.svg" src="_images/Bioplots-17.svg" /></div>
 <p>Add dots to separate groups</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span><span class="s1">&#39;edge&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-17.svg" src="_images/Bioplots-17.svg" /></div>
+<img alt="_images/Bioplots-18.svg" src="_images/Bioplots-18.svg" /></div>
 <p>Using box fillings to separate groups</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-18.svg" src="_images/Bioplots-18.svg" /></div>
+<img alt="_images/Bioplots-19.svg" src="_images/Bioplots-19.svg" /></div>
 <p>Horizontal plot</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>             <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-19.svg" src="_images/Bioplots-19.svg" /></div>
+<img alt="_images/Bioplots-20.svg" src="_images/Bioplots-20.svg" /></div>
 </dd></dl>
 
 <dl class="function">
@@ -656,41 +666,41 @@ True by default.</p>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-20.svg" src="_images/Bioplots-20.svg" /></div>
+<img alt="_images/Bioplots-21.svg" src="_images/Bioplots-21.svg" /></div>
 <p>Add paired lines</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">pair</span><span class="o">=</span><span class="s1">&#39;pair&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-21.svg" src="_images/Bioplots-21.svg" /></div>
+<img alt="_images/Bioplots-22.svg" src="_images/Bioplots-22.svg" /></div>
 <p>Draw a vertical bar plot  grouped by <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">activ</span></code> variables:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-22.svg" src="_images/Bioplots-22.svg" /></div>
+<img alt="_images/Bioplots-23.svg" src="_images/Bioplots-23.svg" /></div>
 <p>Add dots to separate groups</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span><span class="s1">&#39;edge&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-23.svg" src="_images/Bioplots-23.svg" /></div>
+<img alt="_images/Bioplots-24.svg" src="_images/Bioplots-24.svg" /></div>
 <p>Using box fillings to separate groups</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-24.svg" src="_images/Bioplots-24.svg" /></div>
+<img alt="_images/Bioplots-25.svg" src="_images/Bioplots-25.svg" /></div>
 <p>Horizontal plot</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>             <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">color_option</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fill&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-25.svg" src="_images/Bioplots-25.svg" /></div>
+<img alt="_images/Bioplots-26.svg" src="_images/Bioplots-26.svg" /></div>
 </dd></dl>
 
 <dl class="function">
@@ -772,27 +782,27 @@ Other keyword arguments are passed through to
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-26.svg" src="_images/Bioplots-26.svg" /></div>
+<img alt="_images/Bioplots-27.svg" src="_images/Bioplots-27.svg" /></div>
 <p>Draw a vertical lollipop plot grouped by <code class="docutils literal notranslate"><span class="pre">temp</span></code> and <code class="docutils literal notranslate"><span class="pre">activ</span></code> variables:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">lollipop</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-27.svg" src="_images/Bioplots-27.svg" /></div>
+<img alt="_images/Bioplots-28.svg" src="_images/Bioplots-28.svg" /></div>
 <p>Remove the empty space on the frist group:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">lollipop</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-28.svg" src="_images/Bioplots-28.svg" /></div>
+<img alt="_images/Bioplots-29.svg" src="_images/Bioplots-29.svg" /></div>
 <p>Horizontal plot</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">bpt</span><span class="o">.</span><span class="n">lollipop</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="n">subgroup</span><span class="o">=</span><span class="s1">&#39;activ&#39;</span><span class="p">,</span>
 <span class="gp">... </span>             <span class="n">rm_empty_space</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="figure align-default">
-<img alt="_images/Bioplots-29.svg" src="_images/Bioplots-29.svg" /></div>
+<img alt="_images/Bioplots-30.svg" src="_images/Bioplots-30.svg" /></div>
 </dd></dl>
 
 </div>
