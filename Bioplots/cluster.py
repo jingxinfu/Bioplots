@@ -22,7 +22,7 @@ import adjustText
 
 from .utils import MidpointNormalize
 
-__all__ = ["heatmap", "volcano"]
+__all__ = ["heatmap", "volcano", 'scatterplot']
 
 class _BaseScatter:
     __slot__ = ['x', 'y','value','size','marker','param']
@@ -330,7 +330,7 @@ scatter_doc = dict(
         """),
     palette = dedent("""
     palette : str, list, or dict, optional 
-            Paltte to control the color mapping options. Default is 'Set1'.\
+        Paltte to control the color mapping options. Default is 'Set1'.\
         """),
 
     size = dedent("""
@@ -346,7 +346,7 @@ scatter_doc = dict(
         Whether larger values have larger marker size, by default True.\
         """),
     marker = dedent("""
-    marker: str
+    marker : str
         names of variables in ``df`` where piont shape is mapped to.\
         """),
 
@@ -572,7 +572,6 @@ heatmap.__doc__ = heatmap.__doc__.format(**scatter_doc) + \
 
         """)
 
-
 def volcano(df, lfc, pvalue, color_list=('orange', 'lightgray', 'skyblue'), 
             visible_hits=10, label=None, lfc_cutoff=1, pvalue_cutoff=.05,
             text_adjust=dict(arrowprops=dict(arrowstyle='->', color='k'))
@@ -670,4 +669,77 @@ volcano.__doc__ = volcano.__doc__.format(**scatter_doc) + \
         >>> cor_pvalue.head()
         >>> bpt.volcano(df=cor_pvalue,lfc='cor',pvalue='pvalue',lfc_cutoff=0.1,pvalue_cutoff=.05,label='index');
 
+        """)
+
+
+def scatterplot(df,x,y,color=None,marker=None,size=None,
+                size_scale=10, bin_labels=None, size_ascending=True,
+                palette='Set1', vmax=None, vmin=None, center=None, cbar_ax=None,
+                marker_values=None,
+                visible_hits=None,label=None,text_adjust=dict(arrowprops=dict(arrowstyle='->', color='k'))
+            ):
+    """ It plots scatters with annotation by different color and marker shape (optional). 
+
+    Parameters
+    ----------
+    {input_params}
+    {color}
+    {size}
+    {marker}
+    {palette}
+    
+    visible_hits : int or str, optional
+        Number of hits to show the label
+        or a list of customized label to show, by default 10
+    label : str
+        Names of variables in ``df``, which contians labels for points. by default None
+    text_adjust : dict, optional
+        Annotation text property, by default dict(arrowprops=dict(arrowstyle='->', color='k'))
+        Reference: https://adjusttext.readthedocs.io/en/latest/
+
+    Returns
+    -------
+    {ax_out}
+    """
+    use_columns = [x,y]
+    if color:
+        use_columns.append(color)
+    if size:
+        use_columns.append(size)
+    if marker:
+        use_columns.append(marker)
+
+    df = df.copy().dropna(subset=use_columns)
+    plotter = Anno(df=df, x=x, y=y, color=color,size=size,marker=marker)
+    ax = plotter.plot(size_scale=size_scale, bin_labels=bin_labels, size_ascending=size_ascending,
+                      palette=palette, vmax=vmax, vmin=vmin, center=center, cbar_ax=cbar_ax,
+                      marker_values=marker_values)
+
+    ## Show customized hit from the list of input hits
+    if (label is not None) and isinstance(visible_hits, list):
+        visible_pos = df.loc[df[label].isin(visible_hits), :]
+        texts = [
+            ax.text(row[x], row[y], row[label], c='k')
+            for _, row in visible_pos.iterrows()
+        ]
+        adjustText.adjust_text(texts, **text_adjust)
+    return ax
+
+
+scatterplot.__doc__ = scatterplot.__doc__.format(**scatter_doc) + \
+    dedent("""\
+    
+    Examples
+    --------
+
+    Visualize 2D scatter plot with mutiple annotations:
+
+    .. plot::
+        :context: close-figs
+
+        >>> import Bioplots as bpt
+        >>> df = bpt.get_rdataset('lung')
+        >>> bpt.scatterplot(df=df.head(20),x='wt.loss',y='age',color='inst',palette='RdBu_r',
+        ...        size='time',label='status',visible_hits=[2],size_scale=400)
+       
         """)

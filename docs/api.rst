@@ -13,9 +13,17 @@ Distribution plots
     violin
     bar
     lollipop
+
+Clustering (relationship) plots
+---------------------------------
+
+.. autosummary::
+    :toctree: generated/
+
     heatmap
     volcano
-   
+    scatterplot
+
 Utility
 ------------------
 

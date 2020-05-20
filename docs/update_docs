@@ -1,0 +1,4 @@
+rm -rf generated
+rm -rf html
+pip install ../ && sphinx-build -b html . html
+cp github.html html/

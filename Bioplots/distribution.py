@@ -706,7 +706,7 @@ def box(df, x, y, subgroup=None, order='median', subgroup_order='median', pair=N
         stat_anno_by_star = stat_anno_by_star,
         color_stat_sig = color_stat_sig,
     )
-        
+    df = df.copy()
     plotter = BoxBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,pair=pair,
                          rm_empty_space=rm_empty_space, colors=colors)
     
@@ -730,6 +730,7 @@ def violin(df, x, y, subgroup=None, order='median', subgroup_order='median', pai
         stat_anno_by_star=stat_anno_by_star,
         color_stat_sig=color_stat_sig,
     )
+    df = df.copy()
     plotter = ViolinBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,pair=pair,
                          rm_empty_space=rm_empty_space, colors=colors)
 
@@ -755,6 +756,7 @@ def bar(df, x, y, subgroup=None, order='median', subgroup_order='median', pair=N
         color_stat_sig=color_stat_sig,
     )
 
+    df = df.copy()
     plotter = BarBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order, pair=pair,
                             rm_empty_space=rm_empty_space, colors=colors)
 
@@ -779,6 +781,7 @@ def lollipop(df, x, y, subgroup=None, order='median', subgroup_order='median', r
         color_stat_sig=color_stat_sig,
     )
 
+    df = df.copy()
     plotter = LollipopBase(df=df, x=x, y=y, subgroup=subgroup, order=order, subgroup_order=subgroup_order,
                          rm_empty_space=rm_empty_space, colors=colors)
 

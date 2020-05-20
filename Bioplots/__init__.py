@@ -14,7 +14,7 @@
 __doc__=""" 
 """ 
 
-__version__ = '0.1.2'
+__version__ = '0.1.5'
 
 from .utils import *
 from .distribution import *
