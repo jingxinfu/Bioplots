@@ -108,7 +108,7 @@
 <h1>Bioplots.volcano<a class="headerlink" href="#bioplots-volcano" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="Bioplots.volcano">
-<code class="sig-prename descclassname">Bioplots.</code><code class="sig-name descname">volcano</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">lfc</em>, <em class="sig-param">pvalue</em>, <em class="sig-param">color_list=('orange'</em>, <em class="sig-param">'lightgray'</em>, <em class="sig-param">'skyblue')</em>, <em class="sig-param">visible_hits=10</em>, <em class="sig-param">label=None</em>, <em class="sig-param">lfc_cutoff=1</em>, <em class="sig-param">pvalue_cutoff=0.05</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.volcano" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Bioplots.</code><code class="sig-name descname">volcano</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">lfc</em>, <em class="sig-param">pvalue</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">color_list=('orange'</em>, <em class="sig-param">'lightgray'</em>, <em class="sig-param">'skyblue')</em>, <em class="sig-param">visible_hits=10</em>, <em class="sig-param">label=None</em>, <em class="sig-param">lfc_cutoff=1</em>, <em class="sig-param">pvalue_cutoff=0.05</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.volcano" title="Permalink to this definition">¶</a></dt>
 <dd><p>It plots significance versus fold-change on the y and x axes, respectively.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -138,6 +138,8 @@ Points with <code class="docutils literal notranslate"><span class="pre">pvalue<
 Reference: <a class="reference external" href="https://adjusttext.readthedocs.io/en/latest/">https://adjusttext.readthedocs.io/en/latest/</a></p>
 </dd>
 </dl>
+</dd>
+<dt><strong>ax</strong><span class="classifier">matplotlib Axes, optional</span></dt><dd><p>Axes object to draw the plot onto, otherwise uses the current Axes.</p>
 </dd>
 </dl>
 </dd>

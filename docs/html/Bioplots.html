@@ -196,7 +196,7 @@ e.g bins=[0,.01,.05,1],labels=[‘**’,’*’,’NS’]</p>
 
 <dl class="function">
 <dt id="Bioplots.cluster.volcano">
-<code class="sig-prename descclassname">Bioplots.cluster.</code><code class="sig-name descname">volcano</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">lfc</em>, <em class="sig-param">pvalue</em>, <em class="sig-param">color_list=('orange'</em>, <em class="sig-param">'lightgray'</em>, <em class="sig-param">'skyblue')</em>, <em class="sig-param">visible_hits=10</em>, <em class="sig-param">label=None</em>, <em class="sig-param">lfc_cutoff=1</em>, <em class="sig-param">pvalue_cutoff=0.05</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.cluster.volcano" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Bioplots.cluster.</code><code class="sig-name descname">volcano</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">lfc</em>, <em class="sig-param">pvalue</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">color_list=('orange'</em>, <em class="sig-param">'lightgray'</em>, <em class="sig-param">'skyblue')</em>, <em class="sig-param">visible_hits=10</em>, <em class="sig-param">label=None</em>, <em class="sig-param">lfc_cutoff=1</em>, <em class="sig-param">pvalue_cutoff=0.05</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.cluster.volcano" title="Permalink to this definition">¶</a></dt>
 <dd><p>It plots significance versus fold-change on the y and x axes, respectively.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -226,6 +226,8 @@ Points with <code class="docutils literal notranslate"><span class="pre">pvalue<
 Reference: <a class="reference external" href="https://adjusttext.readthedocs.io/en/latest/">https://adjusttext.readthedocs.io/en/latest/</a></p>
 </dd>
 </dl>
+</dd>
+<dt><strong>ax</strong><span class="classifier">matplotlib Axes, optional</span></dt><dd><p>Axes object to draw the plot onto, otherwise uses the current Axes.</p>
 </dd>
 </dl>
 </dd>
@@ -257,7 +259,7 @@ Reference: <a class="reference external" href="https://adjusttext.readthedocs.io
 
 <dl class="function">
 <dt id="Bioplots.cluster.scatterplot">
-<code class="sig-prename descclassname">Bioplots.cluster.</code><code class="sig-name descname">scatterplot</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">color=None</em>, <em class="sig-param">marker=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">size_scale=10</em>, <em class="sig-param">bin_labels=None</em>, <em class="sig-param">size_ascending=True</em>, <em class="sig-param">palette='Set1'</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">center=None</em>, <em class="sig-param">cbar_ax=None</em>, <em class="sig-param">marker_values=None</em>, <em class="sig-param">visible_hits=None</em>, <em class="sig-param">label=None</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em>, <em class="sig-param">scatter_kws={}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.cluster.scatterplot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Bioplots.cluster.</code><code class="sig-name descname">scatterplot</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">color=None</em>, <em class="sig-param">marker=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">size_scale=10</em>, <em class="sig-param">bin_labels=None</em>, <em class="sig-param">size_ascending=True</em>, <em class="sig-param">palette='Set1'</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">center=None</em>, <em class="sig-param">cbar_ax=None</em>, <em class="sig-param">marker_values=None</em>, <em class="sig-param">visible_hits=None</em>, <em class="sig-param">label=None</em>, <em class="sig-param">text_adjust={'arrowprops': {'arrowstyle': '-&gt;'</em>, <em class="sig-param">'color': 'k'}}</em>, <em class="sig-param">scatter_kws={}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.cluster.scatterplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>It plots scatters with annotation by different color and marker shape (optional).</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -299,6 +301,8 @@ Reference: <a class="reference external" href="https://adjusttext.readthedocs.io
 <dt>scatter_kws<span class="classifier">dict, optional</span></dt><dd><p>Scatter property.</p>
 </dd>
 </dl>
+</dd>
+<dt><strong>ax</strong><span class="classifier">matplotlib Axes, optional</span></dt><dd><p>Axes object to draw the plot onto, otherwise uses the current Axes.</p>
 </dd>
 </dl>
 </dd>

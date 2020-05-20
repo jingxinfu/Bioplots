@@ -284,7 +284,8 @@ class _BaseScatter:
         ## Add colorbar
         if cbar_ax:
             x_loc = 1.30
-            cbar_ax.figure.colorbar(cur)
+            clb = cbar_ax.figure.colorbar(cur)
+            clb.ax.set_title(self.param['title']['color'])
         else:
             x_loc = 1.05 
         y_loc = 1
@@ -572,7 +573,7 @@ heatmap.__doc__ = heatmap.__doc__.format(**scatter_doc) + \
 
         """)
 
-def volcano(df, lfc, pvalue, color_list=('orange', 'lightgray', 'skyblue'), 
+def volcano(df, lfc, pvalue, ax=None,color_list=('orange', 'lightgray', 'skyblue'), 
             visible_hits=10, label=None, lfc_cutoff=1, pvalue_cutoff=.05,
             text_adjust=dict(arrowprops=dict(arrowstyle='->', color='k'))
             ):
@@ -605,7 +606,8 @@ def volcano(df, lfc, pvalue, color_list=('orange', 'lightgray', 'skyblue'),
     text_adjust : dict, optional
         Annotation text property, by default dict(arrowprops=dict(arrowstyle='->', color='k'))
         Reference: https://adjusttext.readthedocs.io/en/latest/
-
+    {ax_in}
+    
     Returns
     -------
     {ax_out}
@@ -624,7 +626,7 @@ def volcano(df, lfc, pvalue, color_list=('orange', 'lightgray', 'skyblue'),
     df.loc[pos_sig, signal_col] = 1
     palette = {k:v for k,v in zip([1,0,-1],color_list)}
     plotter = Anno(df=df,x=lfc,y=pvalue,color=signal_col)
-    ax = plotter.plot(palette=palette)
+    ax = plotter.plot(ax=ax,palette=palette)
 
     ## Show Text For Significant Points]
     if label is not None:
@@ -672,7 +674,7 @@ volcano.__doc__ = volcano.__doc__.format(**scatter_doc) + \
         """)
 
 
-def scatterplot(df,x,y,color=None,marker=None,size=None,
+def scatterplot(df,x,y,ax=None,color=None,marker=None,size=None,
                 size_scale=10, bin_labels=None, size_ascending=True,
                 palette='Set1', vmax=None, vmin=None, center=None, cbar_ax=None,
                 marker_values=None,
@@ -700,6 +702,7 @@ def scatterplot(df,x,y,color=None,marker=None,size=None,
         Reference: https://adjusttext.readthedocs.io/en/latest/
     scatter_kws : dict, optional
         Scatter property.
+    {ax_in}
 
     Returns
     -------
@@ -715,7 +718,7 @@ def scatterplot(df,x,y,color=None,marker=None,size=None,
 
     df = df.copy().dropna(subset=use_columns)
     plotter = Anno(df=df, x=x, y=y, color=color,size=size,marker=marker)
-    ax = plotter.plot(size_scale=size_scale, bin_labels=bin_labels, size_ascending=size_ascending,
+    ax = plotter.plot(ax=ax,size_scale=size_scale, bin_labels=bin_labels, size_ascending=size_ascending,
                       palette=palette, vmax=vmax, vmin=vmin, center=center, cbar_ax=cbar_ax,
                       marker_values=marker_values,**scatter_kws)
 
