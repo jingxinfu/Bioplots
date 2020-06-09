@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Bioplots.bar &#8212; Bioplots 0.1.6 documentation</title>
+    <title>Bioplots.bar &#8212; Bioplots 0.1.6.2 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -108,7 +108,7 @@
 <h1>Bioplots.bar<a class="headerlink" href="#bioplots-bar" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="Bioplots.bar">
-<code class="sig-prename descclassname">Bioplots.</code><code class="sig-name descname">bar</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">subgroup=None</em>, <em class="sig-param">order='median'</em>, <em class="sig-param">subgroup_order='median'</em>, <em class="sig-param">pair=None</em>, <em class="sig-param">rm_empty_space=False</em>, <em class="sig-param">colors='Set1'</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">color_option='edge'</em>, <em class="sig-param">split_group_by_line=False</em>, <em class="sig-param">stat_anno=True</em>, <em class="sig-param">stat_test='t-test'</em>, <em class="sig-param">stat_display_cutoff=0.05</em>, <em class="sig-param">stat_anno_by_star=True</em>, <em class="sig-param">color_stat_sig=True</em>, <em class="sig-param">bar_kws={}</em>, <em class="sig-param">scatter_kws={'color': (0.21568627450980393</em>, <em class="sig-param">0.49411764705882355</em>, <em class="sig-param">0.7215686274509804)}</em>, <em class="sig-param">legend_kws={'frameon': False}</em>, <em class="sig-param">pair_line_kws={}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.bar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Bioplots.</code><code class="sig-name descname">bar</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">subgroup=None</em>, <em class="sig-param">order='median'</em>, <em class="sig-param">subgroup_order='median'</em>, <em class="sig-param">pair=None</em>, <em class="sig-param">rm_empty_space=False</em>, <em class="sig-param">colors='Set1'</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">color_option='edge'</em>, <em class="sig-param">split_group_by_line=False</em>, <em class="sig-param">stat_anno=True</em>, <em class="sig-param">stat_test='t-test'</em>, <em class="sig-param">stat_display_cutoff=0.05</em>, <em class="sig-param">stat_anno_by_star=True</em>, <em class="sig-param">color_stat_sig=True</em>, <em class="sig-param">bar_kws={}</em>, <em class="sig-param">scatter_kws={'color': (0.21568627450980393</em>, <em class="sig-param">0.49411764705882355</em>, <em class="sig-param">0.7215686274509804)}</em>, <em class="sig-param">legend_kws={'frameon': False</em>, <em class="sig-param">'loc': (1.05</em>, <em class="sig-param">0)}</em>, <em class="sig-param">pair_line_kws={}</em><span class="sig-paren">)</span><a class="headerlink" href="#Bioplots.bar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a bar plot to show interested feature distributions with respect to groups and subgroups.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -133,7 +133,7 @@ or customized by users (if a <cite>dict</cite> variable is passed into).
 <code class="docutils literal notranslate"><span class="pre">e.g:{'(group_1,group_2)':p_value,...}</span></code>. 
 True by default.</p>
 </dd>
-<dt><strong>stat_test</strong><span class="classifier">str, optional</span></dt><dd><p>Options can be ‘t-test’ or ‘wilcoxon’.
+<dt><strong>stat_test</strong><span class="classifier">str, optional</span></dt><dd><p>Options can be ‘t-test’, ‘wilcoxon’, or ‘mannwhitneyu’ (unequal N wilcoxon).
 ‘t-test’ by default.</p>
 </dd>
 <dt><strong>stat_anno_by_star</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether use the significant label instead of real number.

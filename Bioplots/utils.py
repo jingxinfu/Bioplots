@@ -54,9 +54,9 @@ def get_rdataset(dataset_name):
 def pair_wise_compare(grouped_val, groups, test='t-test', return_z_score=False, **kwargs):
     func_map = {
         't-test': stats.ttest_ind,
-        'wilcoxon': stats.wilcoxon
+        'wilcoxon': stats.wilcoxon,
+        'mannwhitneyu': stats.mannwhitneyu, # For unequal N of wilcoxon
     }
-
     result = OrderedDict()
     for i, first in enumerate(groups):
         for second in groups[i+1:]:

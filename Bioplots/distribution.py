@@ -324,8 +324,11 @@ class _Base(object):
                     Line2D([0], [0], marker='o', label=label,
                            color='w', markerfacecolor=color)
                 )
-            
-        ax.legend(handles=handles, loc=(1.05, 0), **legend_kws)
+
+        if not 'loc' in legend_kws:
+            legend_kws['loc'] = (1.05, 0)
+
+        ax.legend(handles=handles,  **legend_kws)
 
 
     def plot(self, ax, color_option,
@@ -841,7 +844,7 @@ _distribution_docs = dict(
         ``e.g:{'(group_1,group_2)':p_value,...}``. 
         True by default.
     stat_test : str, optional
-        Options can be 't-test' or 'wilcoxon'.
+        Options can be 't-test', 'wilcoxon', or 'mannwhitneyu' (unequal N wilcoxon).
         't-test' by default.
     stat_anno_by_star : bool, optional
         Whether use the significant label instead of real number.
