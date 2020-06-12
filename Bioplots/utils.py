@@ -12,6 +12,7 @@
 
 
 import os
+from warnings import warn
 import pkg_resources
 
 from scipy import stats 
@@ -61,16 +62,27 @@ def pair_wise_compare(grouped_val, groups, test='t-test', return_z_score=False, 
     for i, first in enumerate(groups):
         for second in groups[i+1:]:
             if return_z_score:
-                result[(first, second)] = func_map[test](grouped_val.get_group(first),
-                                                         grouped_val.get_group(
-                                                             second),
-                                                         **kwargs)
+                try:
+                    result[(first, second)] = func_map[test](grouped_val.get_group(first),
+                                                            grouped_val.get_group(
+                                                                second),
+                                                            **kwargs)
+                except ValueError:
+                    warn('All numbers are identical in mannwhitneyu',
+                         category=None, stacklevel=1)
+                    result[(first, second)] =(0,1)
             else:
-                result[(first, second)] = func_map[test](grouped_val.get_group(first),
-                                                         grouped_val.get_group(
-                                                             second),
-                                                         **kwargs
-                                                         )[1]
+                try:
+                    result[(first, second)] = func_map[test](grouped_val.get_group(first),
+                                                            grouped_val.get_group(
+                                                                second),
+                                                            **kwargs
+                                                            )[1]
+                except ValueError:
+                    warn('All numbers are identical in mannwhitneyu',
+                         category=None, stacklevel=1)
+                    result[(first, second)] =1
+                    
     return result
 
 def fancy_scientific(x):

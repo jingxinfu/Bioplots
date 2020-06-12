@@ -391,6 +391,7 @@ class _Base(object):
                                 name: (adjust_position[pair_i], boxData[pair_i])
                                 for pair_i, name in enumerate(subgroup_value[self.pair])
                                               })
+                            
 
                             if len(pair_points) > 0:
                                 ol_names = pair_points.index.intersection(
@@ -401,12 +402,16 @@ class _Base(object):
                                     cx,cy = current_points[name]
                                     x = [px,cx]
                                     y = [py,cy]
-                                    if self.vertical:
+                                    if not self.vertical:
                                         x,y = y,x
-                                    ax.plot(x,y,**pair_line_kws)
+                                        
+                                    if 'lw' not in pair_line_kws:
+                                        pair_line_kws['lw'] = 1
+                                    if 'c' not in pair_line_kws:
+                                        pair_line_kws['c'] = 'k'
+                                    ax.plot(x, y,zorder=3,**pair_line_kws)
 
                             pair_points = current_points
-
                         # Ticks and Groups locus information
                         group_locus[(group_label, subgroup_label)] = positions
                         total_n += 1
@@ -461,7 +466,12 @@ class _Base(object):
                                     y = [py, cy]
                                     if not self.vertical:
                                         x, y = y, x
-                                    ax.plot(x,y,lw=1,c='k',zorder=3) #**pair_line_kws)
+                                    if 'lw' not in pair_line_kws:
+                                        pair_line_kws['lw'] = 1
+                                    if 'c' not in pair_line_kws:
+                                        pair_line_kws['c'] = 'k'
+
+                                    ax.plot(x,y,zorder=3,**pair_line_kws)
                             pair_points = current_points
 
                 tick_locations.append(tick_loci)
