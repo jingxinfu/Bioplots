@@ -87,12 +87,12 @@ class _Base(object):
     def _order_check(self,group_name,group_order):
         """ check group orders """
         groups = self.df[group_name].unique().tolist() 
-        if isinstance(group_order, list):
-            group_order = group_order + [x for x in groups if not x in group_order]
-        elif isinstance(group_order, str):
-            if group_order is None: # keep the original order
+        if group_order is None:  # keep the original order
                 group_order = groups
-            elif group_order == 'median':
+        elif isinstance(group_order, list):
+            group_order = group_order + [x for x in groups if not x in group_order]
+        elif isinstance(group_order, str):  
+            if group_order == 'median':
                 group_order = self.df.groupby(group_name)[self.value].median().sort_values().index.tolist()
             elif group_order== 'name':
                 group_order = sorted(groups)
