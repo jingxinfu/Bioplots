@@ -49,7 +49,7 @@ class _Base(object):
         self._stat_anno_median_max = stat_anno_median_max
         # Establish plotting data
         self._establish_data(x,y)
-
+    
     # Variable Checking 
     def _check_variables(self, x, y):
         """Check variables are correct"""
@@ -90,7 +90,9 @@ class _Base(object):
         if isinstance(group_order, list):
             group_order = group_order + [x for x in groups if not x in group_order]
         elif isinstance(group_order, str):
-            if group_order == 'median':
+            if group_order is None: # keep the original order
+                group_order = groups
+            elif group_order == 'median':
                 group_order = self.df.groupby(group_name)[self.value].median().sort_values().index.tolist()
             elif group_order== 'name':
                 group_order = sorted(groups)
