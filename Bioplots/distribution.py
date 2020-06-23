@@ -86,7 +86,11 @@ class _Base(object):
 
     def _order_check(self,group_name,group_order):
         """ check group orders """
-        groups = self.df[group_name].unique().tolist() 
+        if self.df[group_name].dtype == 'category':
+            groups = self.df[group_name].cat.categories.tolist()
+        else:
+            groups = self.df[group_name].unique().tolist() 
+            
         if group_order is None:  # keep the original order
                 group_order = groups
         elif isinstance(group_order, list):
