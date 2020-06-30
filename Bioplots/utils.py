@@ -52,7 +52,8 @@ def get_rdataset(dataset_name):
     df = pd.read_csv(DATASET[dataset_name], index_col=0)
     return df
     
-def pair_wise_compare(grouped_val, groups, test='t-test', return_z_score=False, **kwargs):
+
+def pair_wise_compare(grouped_val, groups, test='t-test', return_z_score=False, return_median=False,**kwargs):
     func_map = {
         't-test': stats.ttest_ind,
         'wilcoxon': stats.wilcoxon,
@@ -71,6 +72,24 @@ def pair_wise_compare(grouped_val, groups, test='t-test', return_z_score=False, 
                     warn('All numbers are identical in mannwhitneyu',
                          category=None, stacklevel=1)
                     result[(first, second)] =(0,1)
+
+            elif return_median:
+                try:
+                    v_median = grouped_val.get_group(first).median() - \
+                        grouped_val.get_group(second).median()
+
+                    p = func_map[test](grouped_val.get_group(first),
+                                                             grouped_val.get_group(
+                        second),
+                        **kwargs)[1]
+
+                    result[(first, second)] = (v_median,p)
+                    
+                except ValueError:
+                    warn('All numbers are identical in mannwhitneyu',
+                         category=None, stacklevel=1)
+                    result[(first, second)] = (0, 1)
+
             else:
                 try:
                     result[(first, second)] = func_map[test](grouped_val.get_group(first),

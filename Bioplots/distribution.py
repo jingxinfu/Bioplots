@@ -215,7 +215,7 @@ class _Base(object):
                 if len(groups) < 2:
                     return
                 stat_anno = pair_wise_compare(self.gps, test=stat_test, 
-                            groups=groups,return_z_score=True)
+                            groups=groups,return_median=True)
 
             elif not isinstance(stat_anno, dict):
                 raise ValueError('stat_anno only support input types as dict or bool')
@@ -248,7 +248,7 @@ class _Base(object):
 
         # stat_anno = {k: v for k, v in stat_anno.items() if v <
         #              stat_display_cutoff}
-        for k, (z,pvalue) in stat_anno.items():
+        for k, (v_median,pvalue) in stat_anno.items():
             # group variable location
             g1_loc = group_locus[k[0]]
             g2_loc = group_locus[k[1]]
@@ -265,7 +265,7 @@ class _Base(object):
 
             # statistics text
             if color_stat_sig and (pvalue < .05):
-                if z < 0:
+                if v_median < 0:
                     text_color = 'indianred'
                 else:
                     text_color = 'steelblue'
