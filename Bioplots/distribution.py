@@ -214,8 +214,9 @@ class _Base(object):
                 groups = list(group_locus.keys())
                 if len(groups) < 2:
                     return
-                stat_anno = pair_wise_compare(self.gps, test=stat_test, groups=groups)
-                
+                stat_anno = pair_wise_compare(self.gps, test=stat_test, 
+                            groups=groups,return_z_score=True)
+
             elif not isinstance(stat_anno, dict):
                 raise ValueError('stat_anno only support input types as dict or bool')
         else: 
@@ -247,7 +248,7 @@ class _Base(object):
 
         # stat_anno = {k: v for k, v in stat_anno.items() if v <
         #              stat_display_cutoff}
-        for k, v in stat_anno.items():
+        for k, (z,pvalue) in stat_anno.items():
             # group variable location
             g1_loc = group_locus[k[0]]
             g2_loc = group_locus[k[1]]
@@ -263,30 +264,28 @@ class _Base(object):
                 text_x, text_y = text_y, text_x
 
             # statistics text
-            if color_stat_sig:
-                if v < .01:
+            if color_stat_sig and (pvalue < .05):
+                if z < 0:
                     text_color = 'indianred'
-                elif v < .05:
-                    text_color = 'gold'
                 else:
-                    text_color = 'k'
+                    text_color = 'steelblue'
             else:
                 text_color = 'k'
           
             # show sigfinicance label
             if stat_anno_by_star:  
-                if v <= .0001:
+                if pvalue <= .0001:
                     stat_str = '****'
-                elif v <= .001:
+                elif pvalue <= .001:
                     stat_str = '***'
-                elif v <= .01:
+                elif pvalue <= .01:
                     stat_str = '**'
-                elif v <= .05:
+                elif pvalue <= .05:
                     stat_str = '*'
                 else:
                     stat_str = 'NS'
             else:
-                stat_str = r'${}$'.format(fancy_scientific(v))
+                stat_str = r'${}$'.format(fancy_scientific(pvalue))
 
             ax.text(text_x, text_y, stat_str,
                     color=text_color, ha=ha, va=va)
